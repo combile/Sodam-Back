@@ -33,8 +33,8 @@ if [ ! -f "../instance/app.db" ]; then
 fi
 
 # 백엔드 서버 시작 (백그라운드)
-echo "백엔드 서버를 시작합니다 (포트 5000)..."
-flask --app backend.wsgi run -p 5000 --debug &
+echo "백엔드 서버를 시작합니다 (포트 5001)..."
+flask --app backend.wsgi run -p 5001 --debug &
 BACKEND_PID=$!
 
 # 프론트엔드 실행
@@ -52,7 +52,7 @@ FRONTEND_PID=$!
 
 echo "✅ 서버가 시작되었습니다!"
 echo "📱 프론트엔드: http://localhost:3000"
-echo "🔧 백엔드: http://localhost:5000"
+echo "🔧 백엔드: http://localhost:5001"
 echo ""
 echo "서버를 중지하려면 Ctrl+C를 누르세요."
 

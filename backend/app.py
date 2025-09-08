@@ -22,6 +22,15 @@ def create_app(config_object: type = Config) -> Flask:
             "supports_credentials": True
         }
     })
+    
+    # CORS 헤더를 모든 응답에 추가
+    @app.after_request
+    def after_request(response):
+        response.headers.add('Access-Control-Allow-Origin', 'http://localhost:3000')
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,X-Requested-With')
+        response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+        response.headers.add('Access-Control-Allow-Credentials', 'true')
+        return response
 
     # Blueprints (namespaced under /api/v1)
     app.register_blueprint(api_bp,  url_prefix="/api/v1")
