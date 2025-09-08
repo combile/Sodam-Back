@@ -1,4 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import MarketScoreCalculator from "../../components/MarketScoreCalculator";
+import MarketComparison from "../../components/MarketComparison";
+import { ScoreResponse } from "../../api/recommendations";
 
 interface UserLocation {
   lat: number;
@@ -31,6 +34,8 @@ const MarketAnalysisPage: React.FC = () => {
   const [currentRiskType, setCurrentRiskType] = useState<string>("");
   const [riskAnalysis, setRiskAnalysis] = useState<MarketAnalysis | null>(null);
   const [strategyCards, setStrategyCards] = useState<StrategyCard[]>([]);
+  const [calculatedScore, setCalculatedScore] = useState<ScoreResponse | null>(null);
+  const [activeTab, setActiveTab] = useState<'map' | 'calculator' | 'comparison'>('map');
 
   const mapRef = useRef<HTMLDivElement>(null);
 
@@ -283,6 +288,23 @@ const MarketAnalysisPage: React.FC = () => {
     );
   }
 
+  const handleScoreCalculated = (score: ScoreResponse) => {
+    setCalculatedScore(score);
+    setMarketHealthScore(score.score);
+    
+    // 점수에 따른 위험도 분석 업데이트
+    const riskAnalysis = {
+      type: score.score >= 80 ? "우수형" : score.score >= 60 ? "안정형" : score.score >= 40 ? "보통형" : "주의형",
+      description: score.score >= 80 ? "유입·소비력 높음, 경쟁 적음" : 
+                   score.score >= 60 ? "유입·소비력 보통, 경쟁 낮음" : 
+                   score.score >= 40 ? "유입·소비력 보통, 경쟁 보통" : "유입·소비력 낮음, 경쟁 높음",
+      color: score.score >= 80 ? "#28a745" : score.score >= 60 ? "#ffc107" : score.score >= 40 ? "#fd7e14" : "#dc3545",
+      riskLevel: score.score >= 60 ? "낮음" : score.score >= 40 ? "보통" : "높음",
+    };
+    setRiskAnalysis(riskAnalysis);
+    setCurrentRiskType(riskAnalysis.type);
+  };
+
   return (
     <div
       style={{
@@ -298,15 +320,70 @@ const MarketAnalysisPage: React.FC = () => {
         상권 분석
       </h1>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "2fr 1fr",
-          gap: "1.5rem",
-          flex: 1,
-          minHeight: 0, // 그리드 아이템이 부모 높이를 넘지 않도록
-        }}
-      >
+      {/* 탭 메뉴 */}
+      <div style={{ 
+        display: "flex", 
+        gap: "8px", 
+        marginBottom: "1.5rem",
+        borderBottom: "1px solid #e9ecef"
+      }}>
+        <button
+          onClick={() => setActiveTab('map')}
+          style={{
+            padding: "12px 24px",
+            border: "none",
+            background: activeTab === 'map' ? "#007bff" : "transparent",
+            color: activeTab === 'map' ? "white" : "#6c757d",
+            borderRadius: "8px 8px 0 0",
+            cursor: "pointer",
+            fontWeight: "500",
+            transition: "all 0.2s"
+          }}
+        >
+          지도 분석
+        </button>
+        <button
+          onClick={() => setActiveTab('calculator')}
+          style={{
+            padding: "12px 24px",
+            border: "none",
+            background: activeTab === 'calculator' ? "#007bff" : "transparent",
+            color: activeTab === 'calculator' ? "white" : "#6c757d",
+            borderRadius: "8px 8px 0 0",
+            cursor: "pointer",
+            fontWeight: "500",
+            transition: "all 0.2s"
+          }}
+        >
+          점수 계산기
+        </button>
+        <button
+          onClick={() => setActiveTab('comparison')}
+          style={{
+            padding: "12px 24px",
+            border: "none",
+            background: activeTab === 'comparison' ? "#007bff" : "transparent",
+            color: activeTab === 'comparison' ? "white" : "#6c757d",
+            borderRadius: "8px 8px 0 0",
+            cursor: "pointer",
+            fontWeight: "500",
+            transition: "all 0.2s"
+          }}
+        >
+          상권 비교
+        </button>
+      </div>
+
+      {activeTab === 'map' ? (
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "2fr 1fr",
+            gap: "1.5rem",
+            flex: 1,
+            minHeight: 0, // 그리드 아이템이 부모 높이를 넘지 않도록
+          }}
+        >
         {/* 지도 섹션 */}
         <div style={{ display: "flex", flexDirection: "column", minHeight: 0 }}>
           <div
@@ -531,7 +608,15 @@ const MarketAnalysisPage: React.FC = () => {
             )}
           </div>
         </div>
-      </div>
+      ) : activeTab === 'calculator' ? (
+        <div style={{ flex: 1 }}>
+          <MarketScoreCalculator onScoreCalculated={handleScoreCalculated} />
+        </div>
+      ) : (
+        <div style={{ flex: 1 }}>
+          <MarketComparison />
+        </div>
+      )}
     </div>
   );
 };

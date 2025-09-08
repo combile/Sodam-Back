@@ -3,32 +3,42 @@ import apiClient from "./client.ts";
 export interface ScoreRequest {
   features: {
     foot_traffic: number;
-    competition: number;
+    competitors_500m: number;
+    avg_income: number;
     rent_cost: number;
-    accessibility: number;
-    demographics: number;
+    age_20s_ratio: number;
   };
 }
 
 export interface ScoreResponse {
   score: number;
-  recommendation: string;
-  factors: {
-    positive: string[];
-    negative: string[];
+  breakdown: {
+    [key: string]: {
+      value: number;
+      weight: number;
+      contrib: number;
+    };
   };
 }
 
 export interface SampleData {
+  area_id: string;
+  area_name: string;
   features: {
     foot_traffic: number;
-    competition: number;
+    competitors_500m: number;
+    avg_income: number;
     rent_cost: number;
-    accessibility: number;
-    demographics: number;
+    age_20s_ratio: number;
   };
-  location: string;
-  business_type: string;
+  score: number;
+  breakdown: {
+    [key: string]: {
+      value: number;
+      weight: number;
+      contrib: number;
+    };
+  };
 }
 
 export const recommendationsAPI = {
@@ -39,7 +49,7 @@ export const recommendationsAPI = {
   },
 
   // 샘플 데이터 가져오기
-  getSampleData: async (): Promise<SampleData[]> => {
+  getSampleData: async (): Promise<{ items: SampleData[] }> => {
     const response = await apiClient.get("/api/v1/recs/sample");
     return response.data;
   },
