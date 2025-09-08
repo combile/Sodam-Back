@@ -1,0 +1,283 @@
+/* 프로필 업로드 스타일 - ProfileUpload.module.css */
+
+.profileSection {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* 프로필 이미지 컨테이너 */
+.profileImageContainer {
+  width: 100px;
+  height: 100px;
+  border: 3px dashed #e3e3e3;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-bottom: 5px;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+}
+
+.profileImageContainer:hover {
+  border-color: #7DDB69;
+  background: rgba(125, 219, 105, 0.05);
+  transform: scale(1.02);
+  box-shadow: 0 0 20px rgba(125, 219, 105, 0.2);
+}
+
+/* 드래그 상태 */
+.dragging {
+  border-color: #7DDB69 !important;
+  background: rgba(125, 219, 105, 0.1) !important;
+  transform: scale(1.05) !important;
+  box-shadow: 0 0 25px rgba(125, 219, 105, 0.3) !important;
+}
+
+.dragging::after {
+  content: '이곳에 놓으세요';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(125, 219, 105, 0.9);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  animation: dragMessagePulse 0.5s ease-in-out infinite alternate;
+}
+
+/* 프로필 이미지 래퍼 */
+.profileImageWrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.profileImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  transition: transform 0.3s ease;
+}
+
+.profileImageWrapper:hover .profileImage {
+  transform: scale(1.1);
+}
+
+/* 이미지 삭제 버튼 */
+.removeImageBtn {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background: #f44336;
+  color: white;
+  border: 2px solid white;
+  cursor: pointer;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.removeImageBtn:hover {
+  background: #d32f2f;
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(244, 67, 54, 0.4);
+}
+
+/* 플레이스홀더 */
+.profilePlaceholder {
+  text-align: center;
+  color: #999;
+  transition: all 0.3s ease;
+  pointer-events: none;
+}
+
+.profileImageContainer:hover .profilePlaceholder {
+  color: #7DDB69;
+  transform: scale(1.05);
+}
+
+.uploadText {
+  font-size: 12px;
+  line-height: 1.4;
+  margin: 0;
+  font-family: "Apple SD Gothic Neo";
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.optionalText {
+  font-size: 10px;
+  color: #bbb;
+  font-family: "Apple SD Gothic Neo";
+  display: block;
+}
+
+/* 숨겨진 파일 인풋 */
+.hiddenInput {
+  display: none;
+}
+
+/* 업로드 상태 메시지 */
+.uploadStatus {
+  margin-top: 8px;
+  font-size: 12px;
+  text-align: center;
+  min-height: 16px;
+}
+
+.uploadSuccess {
+  color: #2e7d32;
+  animation: successFadeIn 0.3s ease-out;
+}
+
+.uploadError {
+  color: #d32f2f;
+  animation: errorShake 0.5s ease-out;
+}
+
+/* 프로필 업로드 팁 */
+.uploadTips {
+  margin-top: 12px;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 3px solid #7DDB69;
+}
+
+.uploadTip {
+  font-size: 11px;
+  color: #666;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.uploadTip + .uploadTip {
+  margin-top: 4px;
+}
+
+/* 이미지 프리뷰 오버레이 */
+.imageOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.profileImageWrapper:hover .imageOverlay {
+  opacity: 1;
+}
+
+/* 애니메이션 */
+@keyframes dragMessagePulse {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.05);
+  }
+}
+
+@keyframes successFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes errorShake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-4px);
+  }
+  75% {
+    transform: translateX(4px);
+  }
+}
+
+/* 닉네임 상태 */
+.nicknameStatus {
+  min-height: 20px;
+  margin-bottom: 8px;
+}
+
+.nicknameValidation {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 15px;
+  margin-top: 4px;
+}
+
+.validationDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.validDot {
+  background: #2e7d32;
+}
+
+.invalidDot {
+  background: #d32f2f;
+}
+
+/* 반응형 */
+@media (max-width: 500px) {
+  .profileImageContainer {
+    width: 100px;
+    height: 100px;
+    border-width: 2px;
+  }
+  
+  .removeImageBtn {
+    width: 20px;
+    height: 20px;
+    font-size: 10px;
+  }
+  
+  .uploadText {
+    font-size: 11px;
+  }
+  
+  .optionalText {
+    font-size: 9px;
+  }
+}

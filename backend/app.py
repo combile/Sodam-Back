@@ -14,7 +14,14 @@ def create_app(config_object: type = Config) -> Flask:
     migrate.init_app(app, db)
     bcrypt.init_app(app)
     jwt.init_app(app)
-    cors.init_app(app, resources={r"/api/*": {"origins": "*"}})
+    cors.init_app(app, resources={
+        r"/api/*": {
+            "origins": ["http://localhost:3000", "http://127.0.0.1:3000"],
+            "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+            "allow_headers": ["Content-Type", "Authorization", "X-Requested-With"],
+            "supports_credentials": True
+        }
+    })
 
     # Blueprints (namespaced under /api/v1)
     app.register_blueprint(api_bp,  url_prefix="/api/v1")

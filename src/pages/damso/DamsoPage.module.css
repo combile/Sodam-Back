@@ -1,0 +1,372 @@
+/* 담소 페이지 메인 컨테이너 */
+.container {
+  width: 100%;
+  background-color: #ffffff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* 메인 컨텐츠 */
+.mainContent {
+  margin-top: 50px;
+  display: flex;
+  max-width: 1200px;
+  margin: 50px auto;
+  padding: 40px 20px;
+  gap: 40px;
+}
+
+/* 왼쪽 섹션 */
+.leftSection {
+  flex: 2;
+}
+
+/* 탭 네비게이션 */
+.tabNavigation {
+  display: flex;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 32px;
+}
+
+.tabButton {
+  background: none;
+  border: none;
+  padding: 16px 24px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #6b7280;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.tabButton:hover {
+  color: #374151;
+}
+
+.activeTab {
+  color: #7ddb69 !important;
+  border-bottom-color: #7ddb69 !important;
+  font-weight: 600;
+}
+
+/* 질문 리스트 */
+.questionsList {
+  padding: 20px;
+  border-radius: 25px;
+  box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* 질문 카드 */
+.questionCard {
+  background-color: #ffffff;
+  border: 0px solid #e5e7eb;
+  box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.25);
+  border-radius: 12px;
+  padding: 24px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.questionCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 2px 0 rgba(125, 219, 105, 1);
+}
+
+.questionHeader {
+  margin-bottom: 12px;
+}
+
+.category {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.categoryGreen {
+  background-color: rgba(210, 210, 210, 0.3);
+  color: #5fc24a;
+}
+
+.categoryBlue {
+  background-color: rgba(210, 210, 210, 0.3);
+  color: #00baff;
+}
+
+.questionTitle {
+  font-size: 20px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 8px 0;
+  line-height: 1.3;
+}
+
+.questionPrefix {
+  font-weight: 700;
+}
+
+.questionPrefix.categoryGreen {
+  color: #5fc24a;
+}
+
+.questionPrefix.categoryBlue {
+  color: #00baff;
+}
+
+.questionDescription {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* 오른쪽 섹션 */
+.rightSection {
+  flex: 1;
+  min-width: 280px;
+}
+
+/* 프로필 카드 */
+.profileCard {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  margin-top: 87px;
+
+  padding: 24px;
+  position: sticky;
+  top: 120px;
+}
+
+/* 프로필 섹션 */
+.profileSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 24px;
+  overflow: visible;
+}
+
+.profileImageContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+}
+
+.profileImage {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid #ffffff;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+  margin-bottom: 12px;
+}
+
+.profileImg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.newUserButton {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  background-color: #00baff;
+  color: #ffffff;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 32px;
+  font-size: 14px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+/* 레벨 섹션 */
+.levelSection {
+  width: 100%;
+}
+
+.levelHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.levelTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #6b7280;
+  margin: 0;
+}
+
+.levelNumber {
+  font-size: 20px;
+  font-weight: 700;
+  color: #7ddb69;
+}
+
+.levelProgress {
+  width: 100%;
+}
+
+.progressBar {
+  width: 100%;
+  height: 8px;
+  background-color: #e5e7eb;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, #7ddb69, #5789ff);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.levelRange {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+/* 질문하기 버튼 */
+.questionButton {
+  width: 100%;
+  background: linear-gradient(90deg, #7ddb69 0%, #00baff 100%);
+  border: none;
+  border-radius: 16px;
+  padding: 16px 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(125, 219, 105, 0.2);
+}
+
+.questionButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(125, 219, 105, 0.3);
+}
+
+.questionButtonContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.questionButtonText {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.questionButtonTitle {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  font-size: 30px;
+  font-weight: 900;
+  color: #ffffff;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.questionButtonSubtitle {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: #ffffff;
+  opacity: 0.9;
+  display: block;
+}
+
+.questionButtonIcon {
+  background-color: #ffffff;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.helpIcon {
+  font-size: 16px;
+  font-weight: 700;
+  color: #00bcd4;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    gap: 16px;
+    padding: 20px;
+  }
+
+  .searchContainer {
+    width: 100%;
+    max-width: none;
+  }
+
+  .mainContent {
+    flex-direction: column;
+    margin-top: 50px;
+    padding: 20px;
+    gap: 24px;
+  }
+
+  .rightSection {
+    min-width: auto;
+  }
+
+  .profileCard {
+    position: static;
+  }
+
+  .tabNavigation {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .tabButton {
+    white-space: nowrap;
+    min-width: auto;
+    padding: 16px 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .questionCard {
+    padding: 20px;
+  }
+
+  .questionTitle {
+    font-size: 18px;
+  }
+
+  .profileCard {
+    padding: 20px;
+  }
+
+  .profileHeader {
+    gap: 12px;
+  }
+
+  .profileImage {
+    width: 50px;
+    height: 50px;
+  }
+}
