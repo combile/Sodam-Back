@@ -1,0 +1,216 @@
+.wrapper {
+  width: 100%;
+  min-height: 50vh;
+  background: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 110px; /* 헤더 높이에 맞게 조정 */
+  position: relative;
+  margin-bottom: 60px;
+}
+
+.loginDeco {
+  position: absolute;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: linear-gradient(238deg, #a0a49f 7.3%, #f4fff1 32.35%, #fff 92.7%);
+  opacity: 0.6;
+  z-index: 0;
+  animation: float 4s ease-in-out infinite;
+}
+
+.circle1 {
+  top: 20vh;
+  left: 25%;
+}
+.circle2 {
+  bottom: 10vh;
+  right: 24%;
+}
+
+.container {
+  width: 100%;
+  max-width: 430px;
+  text-align: center;
+  animation: containerSlideUp 0.8s cubic-bezier(0.23, 1, 0.32, 1) 0.2s backwards;
+  z-index: 1;
+}
+
+.title {
+  text-align: center;
+  font-family: "Apple SD Gothic Neo";
+  font-size: 45px;
+  font-style: normal;
+  font-weight: 900;
+  line-height: normal;
+  background: linear-gradient(90deg, #579db7 0%, #6bc357 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 8px;
+  animation: titleSlideDown 0.4s ease-out 0.5s backwards;
+}
+
+.title span {
+  color: #64ba4c;
+}
+
+.signup {
+  margin-bottom: 24px;
+  color: #797979;
+  text-align: center;
+  font-family: "Apple SD Gothic Neo";
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 200;
+  line-height: normal;
+  animation: subtitleFadeIn 0.6s ease-out 0.3s backwards;
+}
+
+.signup a {
+  color: #5fc24a;
+  text-align: center;
+  font-family: "Apple SD Gothic Neo";
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 200;
+  line-height: normal;
+  text-decoration: none;
+}
+
+.kakaoLogin {
+  background-color: #fee500;
+  border: none;
+  width: 100%;
+  padding: 12px;
+  font-size: 15px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.25);
+  gap: 10px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  cursor: pointer;
+}
+
+.naverLogin {
+  background-color: #fffffe;
+  border: 1px solid #ffffff;
+  box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.25);
+  width: 100%;
+  padding: 12px;
+  font-size: 15px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border-radius: 10px;
+  margin-bottom: 24px;
+  cursor: pointer;
+}
+
+.separator {
+  color: #aaa;
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+
+.errorMessage {
+  color: #ff4444;
+  font-size: 14px;
+  margin-bottom: 16px;
+  padding: 8px 12px;
+  background-color: #ffe6e6;
+  border: 1px solid #ffcccc;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #fffffe;
+  box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.loginButton {
+  background-color: #7ddb69;
+  color: white;
+  border: none;
+  width: 100%;
+  margin-top: 30px;
+  padding: 12px;
+  font-size: 15px;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.loginButton:active {
+  transform: scale(0.97);
+}
+
+.forgotPassword {
+  display: block;
+  margin-top: 12px;
+  font-size: 13px;
+  color: #64ba4c;
+  text-decoration: none;
+}
+
+@keyframes titleSlideDown {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes subtitleFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translateY(-10px);
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 0.5;
+  }
+}
+
+@keyframes containerSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(40px) rotateX(10deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) rotateX(0deg);
+  }
+}
