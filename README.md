@@ -100,6 +100,7 @@ python run_server.py
 ```
 
 서버가 `http://localhost:5000`에서 실행됩니다.
+배포 서버: `https://port-0-sodam-back-lyo9x8ghce54051e.sel5.cloudtype.app`
 
 **배포된 서버**: `https://port-0-sodam-back-lyo9x8ghce54051e.sel5.cloudtype.app`
 

@@ -19,7 +19,7 @@ services:
           "CMD",
           "curl",
           "-f",
-          "http://localhost:5000/api/v1/market-diagnosis/markets",
+          "https://port-0-sodam-back-lyo9x8ghce54051e.sel5.cloudtype.app/api/v1/market-diagnosis/markets",
         ]
       interval: 30s
       timeout: 10s

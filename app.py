@@ -52,10 +52,15 @@ def create_app(config_object: type = Config) -> Flask:
         3. **응답**: 표준화된 JSON 응답 형식
         4. **에러 처리**: HTTP 상태 코드와 상세 에러 메시지
         
+        ## 환경별 접속 정보
+        - **개발 환경**: 로컬 개발 시 사용
+        - **배포 환경**: 실제 서비스 운영 환경 (권장)
+        
         ## 기본 URL
         - 개발 서버: `http://localhost:5000`
-        - API 엔드포인트: `http://localhost:5000/api/v1`
-        - Swagger 문서: `http://localhost:5000/docs/`
+        - 배포 서버: `https://port-0-sodam-back-lyo9x8ghce54051e.sel5.cloudtype.app`
+        - API 엔드포인트: `https://port-0-sodam-back-lyo9x8ghce54051e.sel5.cloudtype.app/api/v1`
+        - Swagger 문서: `https://port-0-sodam-back-lyo9x8ghce54051e.sel5.cloudtype.app/docs/`
         
         ## 지원 지역
         - 대전광역시 (동구, 중구, 서구, 유성구, 대덕구)
