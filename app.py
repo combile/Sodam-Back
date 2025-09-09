@@ -1,5 +1,6 @@
 from flask import Flask, request
 from datetime import datetime
+from flask_restx import Api, Resource, fields
 from config import Config
 from extensions import db, migrate, bcrypt, jwt, cors
 from blueprints.auth import auth_bp
@@ -23,6 +24,16 @@ def create_app(config_object: type = Config) -> Flask:
     migrate.init_app(app, db)
     bcrypt.init_app(app)
     jwt.init_app(app)
+    
+    # Flask-RESTX API 설정
+    api = Api(
+        app,
+        version='1.0',
+        title='소담(SODAM) API',
+        description='소상공인을 위한 상권 진단 및 사업 추천 플랫폼 API',
+        doc='/swagger/',  # Swagger UI 경로
+        prefix='/api/v1'
+    )
     
     # CORS 설정
     cors.init_app(app, resources={
@@ -98,14 +109,20 @@ def create_app(config_object: type = Config) -> Flask:
     
     @app.route('/api/v1/markets')
     def test_markets():
-        return {
-            'markets': [
-                {'id': 10000, 'name': '강남역 상권', 'area': '서울특별시'},
-                {'id': 10001, 'name': '홍대 상권', 'area': '서울특별시'},
-                {'id': 10002, 'name': '명동 상권', 'area': '서울특별시'}
-            ],
-            'total': 3
-        }, 200
+        try:
+            from services.data_loader import DataLoader
+            data_loader = DataLoader()
+            markets = data_loader.get_market_list()
+            return {
+                'markets': markets[:10],  # 처음 10개만 반환
+                'total': len(markets),
+                'message': '실제 CSV 데이터에서 로드됨'
+            }, 200
+        except Exception as e:
+            return {
+                'error': str(e),
+                'message': 'CSV 데이터 로드 실패'
+            }, 500
     
     @app.route('/docs/')
     def docs():
@@ -265,6 +282,43 @@ def create_app(config_object: type = Config) -> Flask:
         </body>
         </html>
         ''', 200
+
+    # Swagger 네임스페이스 정의
+    ns = api.namespace('sodam', description='SODAM API operations')
+    
+    # Swagger 모델 정의
+    market_model = api.model('Market', {
+        'id': fields.Integer(required=True, description='상권 ID'),
+        'name': fields.String(required=True, description='상권명'),
+        'area': fields.String(required=True, description='지역'),
+        'code': fields.String(description='상권 코드')
+    })
+    
+    # Swagger 엔드포인트 추가
+    @ns.route('/markets')
+    class MarketList(Resource):
+        @ns.doc('get_markets')
+        @ns.marshal_list_with(market_model)
+        def get(self):
+            """상권 목록 조회 (실제 CSV 데이터)"""
+            try:
+                from services.data_loader import DataLoader
+                data_loader = DataLoader()
+                markets = data_loader.get_market_list()
+                return markets[:20], 200  # 처음 20개만 반환
+            except Exception as e:
+                api.abort(500, f'CSV 데이터 로드 실패: {str(e)}')
+    
+    @ns.route('/test')
+    class TestAPI(Resource):
+        @ns.doc('test_api')
+        def get(self):
+            """API 테스트"""
+            return {
+                'message': 'SODAM API 정상 작동',
+                'timestamp': datetime.now().isoformat(),
+                'status': 'success'
+            }, 200
 
     # Blueprints 등록
     app.register_blueprint(auth_bp, url_prefix="/api/v1/auth")
