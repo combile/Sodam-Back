@@ -31,7 +31,7 @@ def create_app(config_object: type = Config) -> Flask:
         version='1.0',
         title='소담(SODAM) API',
         description='소상공인을 위한 상권 진단 및 사업 추천 플랫폼 API',
-        doc='/swagger/',  # Swagger UI 경로
+        doc='/docs/',  # Swagger UI 경로
         prefix='/api/v1',
         catch_all_404s=True  # 404 에러를 API에서 처리
     )
