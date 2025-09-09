@@ -452,7 +452,7 @@ def create_app(config_object: type = Config) -> Flask:
             with app.test_client() as client:
                 response = client.post('/api/v1/auth/login', 
                                      json=request.get_json() or {},
-                                     headers=request.headers)
+                                     headers=dict(request.headers))
                 return response.get_json(), response.status_code
     
     @ns.route('/auth/register')
@@ -463,7 +463,7 @@ def create_app(config_object: type = Config) -> Flask:
             with app.test_client() as client:
                 response = client.post('/api/v1/auth/register',
                                      json=request.get_json() or {},
-                                     headers=request.headers)
+                                     headers=dict(request.headers))
                 return response.get_json(), response.status_code
     
     # 상권 진단 API
@@ -539,7 +539,7 @@ def create_app(config_object: type = Config) -> Flask:
             with app.test_client() as client:
                 response = client.post(f'/api/v1/core-diagnosis/health-score/{market_code}',
                                      json=request.get_json() or {},
-                                     headers=request.headers)
+                                     headers=dict(request.headers))
                 return response.get_json(), response.status_code
     
     @ns.route('/core-diagnosis/comprehensive/<string:market_code>')
@@ -550,7 +550,7 @@ def create_app(config_object: type = Config) -> Flask:
             with app.test_client() as client:
                 response = client.post(f'/api/v1/core-diagnosis/comprehensive/{market_code}',
                                      json=request.get_json() or {},
-                                     headers=request.headers)
+                                     headers=dict(request.headers))
                 return response.get_json(), response.status_code
 
     # Blueprints 등록
