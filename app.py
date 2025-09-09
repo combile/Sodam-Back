@@ -448,6 +448,7 @@ def create_app(config_object: type = Config) -> Flask:
         @ns.doc('auth_login')
         def post(self):
             """사용자 로그인"""
+<<<<<<< HEAD
             data = request.get_json()
             
             if not data:
@@ -476,12 +477,21 @@ def create_app(config_object: type = Config) -> Flask:
                 
             except Exception as e:
                 return {'message': str(e)}, 500
+=======
+            # 실제 블루프린트로 리다이렉트
+            with app.test_client() as client:
+                response = client.post('/api/v1/auth/login', 
+                                     json=request.get_json() or {},
+                                     headers=dict(request.headers))
+                return response.get_json(), response.status_code
+>>>>>>> 212063811e94dbb3673c09bf787430402acb26c9
     
     @ns.route('/auth/register')
     class AuthRegister(Resource):
         @ns.doc('auth_register')
         def post(self):
             """사용자 회원가입"""
+<<<<<<< HEAD
             data = request.get_json()
             
             if not data:
@@ -511,6 +521,13 @@ def create_app(config_object: type = Config) -> Flask:
                 
             except Exception as e:
                 return {'message': str(e)}, 500
+=======
+            with app.test_client() as client:
+                response = client.post('/api/v1/auth/register',
+                                     json=request.get_json() or {},
+                                     headers=dict(request.headers))
+                return response.get_json(), response.status_code
+>>>>>>> 212063811e94dbb3673c09bf787430402acb26c9
     
     # 상권 진단 API
     @ns.route('/market-diagnosis/markets')
@@ -585,7 +602,7 @@ def create_app(config_object: type = Config) -> Flask:
             with app.test_client() as client:
                 response = client.post(f'/api/v1/core-diagnosis/health-score/{market_code}',
                                      json=request.get_json() or {},
-                                     headers=request.headers)
+                                     headers=dict(request.headers))
                 return response.get_json(), response.status_code
     
     @ns.route('/core-diagnosis/comprehensive/<string:market_code>')
@@ -596,7 +613,7 @@ def create_app(config_object: type = Config) -> Flask:
             with app.test_client() as client:
                 response = client.post(f'/api/v1/core-diagnosis/comprehensive/{market_code}',
                                      json=request.get_json() or {},
-                                     headers=request.headers)
+                                     headers=dict(request.headers))
                 return response.get_json(), response.status_code
 
     # Blueprints 등록
