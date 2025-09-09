@@ -7,7 +7,7 @@
 
 ## 기본 정보
 
-- **Base URL**: `http://localhost:5002/api/v1`
+- **Base URL**: `http://localhost:5000/api/v1`
 - **Content-Type**: `application/json`
 - **인증**: JWT Bearer Token
 

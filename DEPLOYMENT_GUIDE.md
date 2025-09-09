@@ -90,7 +90,7 @@ backend/
 docker build -t sodam-backend .
 
 # 컨테이너 실행
-docker run -p 5002:5002 sodam-backend
+docker run -p 5000:5000 sodam-backend
 ```
 
 #### Docker Compose를 사용한 배포
@@ -139,10 +139,12 @@ python run_server.py
 ### API 서버
 
 **로컬 개발 환경:**
-- **URL**: `http://localhost:5002`
-- **API 엔드포인트**: `http://localhost:5002/api/v1/`
+
+- **URL**: `http://localhost:5000`
+- **API 엔드포인트**: `http://localhost:5000/api/v1/`
 
 **배포된 서버:**
+
 - **URL**: `https://port-0-sodam-back-lyo9x8ghce54051e.sel5.cloudtype.app`
 - **API 엔드포인트**: `https://port-0-sodam-back-lyo9x8ghce54051e.sel5.cloudtype.app/api/v1/`
 
@@ -221,7 +223,7 @@ python run_server.py
 
 ```bash
 # 로컬 환경
-curl -f http://localhost:5002/api/v1/market-diagnosis/markets
+curl -f http://localhost:5000/api/v1/market-diagnosis/markets
 
 # 배포된 서버
 curl -f https://port-0-sodam-back-lyo9x8ghce54051e.sel5.cloudtype.app/api/v1/market-diagnosis/markets

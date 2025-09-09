@@ -19,7 +19,7 @@ COPY . .
 RUN mkdir -p instance
 
 # 포트 노출
-EXPOSE 5002
+EXPOSE 5000
 
 # 환경 변수 설정
 ENV FLASK_APP=run_server.py

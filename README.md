@@ -99,7 +99,7 @@ flask db upgrade
 python run_server.py
 ```
 
-서버가 `http://localhost:5002`에서 실행됩니다.
+서버가 `http://localhost:5000`에서 실행됩니다.
 
 **배포된 서버**: `https://port-0-sodam-back-lyo9x8ghce54051e.sel5.cloudtype.app`
 
@@ -128,10 +128,12 @@ python run_server.py
 Swagger UI를 통해 API 문서를 확인할 수 있습니다:
 
 **로컬 개발 환경:**
+
 - **Swagger UI**: `http://localhost:5003/docs/`
 - **API JSON**: `http://localhost:5003/api/v1/swagger.json`
 
 **배포된 서버:**
+
 - **Swagger UI**: `https://port-0-sodam-back-lyo9x8ghce54051e.sel5.cloudtype.app/docs/`
 - **API JSON**: `https://port-0-sodam-back-lyo9x8ghce54051e.sel5.cloudtype.app/api/v1/swagger.json`
 
@@ -141,7 +143,7 @@ Swagger UI를 통해 API 문서를 확인할 수 있습니다:
 
 ```bash
 docker build -t sodam-backend .
-docker run -p 5002:5002 sodam-backend
+docker run -p 5000:5000 sodam-backend
 ```
 
 ### 환경 변수

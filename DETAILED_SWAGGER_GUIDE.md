@@ -47,7 +47,7 @@
 
 ### 3. 실제 API 서버
 
-- **URL**: `http://localhost:5002/api/v1/`
+- **URL**: `http://localhost:5000/api/v1/`
 - **용도**: 실제 API 호출 및 테스트
 
 ---
@@ -253,7 +253,7 @@ python backend/run_server.py
 
 ```bash
 # 실제 API 서버로 직접 호출
-curl -X GET "http://localhost:5002/api/v1/core-diagnosis/foot-traffic/10000"
+curl -X GET "http://localhost:5000/api/v1/core-diagnosis/foot-traffic/10000"
 
 # Swagger UI를 통한 테스트
 # 브라우저에서 http://localhost:5003/docs/ 접속 후 테스트
@@ -312,7 +312,7 @@ curl -X GET "http://localhost:5002/api/v1/core-diagnosis/foot-traffic/10000"
 
 - **Swagger UI**: `http://localhost:5003/docs/`
 - **API JSON**: `http://localhost:5003/api/v1/swagger.json`
-- **실제 API 서버**: `http://localhost:5002/api/v1/`
+- **실제 API 서버**: `http://localhost:5000/api/v1/`
 - **API 명세서**: `backend/ENHANCED_API_SPECIFICATION.md`
 
 ---

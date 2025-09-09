@@ -4,7 +4,7 @@ services:
   sodam-backend:
     build: .
     ports:
-      - "5002:5002"
+      - "5000:5000"
     environment:
       - FLASK_ENV=production
       - JWT_SECRET_KEY=your-production-secret-key
@@ -19,7 +19,7 @@ services:
           "CMD",
           "curl",
           "-f",
-          "http://localhost:5002/api/v1/market-diagnosis/markets",
+          "http://localhost:5000/api/v1/market-diagnosis/markets",
         ]
       interval: 30s
       timeout: 10s
