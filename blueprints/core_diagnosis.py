@@ -32,7 +32,51 @@ success_response = core_diagnosis_ns.model('SuccessResponse', {
 @core_diagnosis_ns.route('/foot-traffic/<string:market_code>')
 class FootTrafficAnalysis(Resource):
     @core_diagnosis_ns.marshal_with(success_response)
-    @core_diagnosis_ns.doc('foot_traffic', description='유동인구 변화량 분석')
+    @core_diagnosis_ns.doc('foot_traffic', 
+        description='''
+        ## 유동인구 변화량 분석
+        
+        특정 상권의 유동인구 변화량을 분석하여 상권 활성화 상태를 진단합니다.
+        
+        ### 경로 파라미터
+        - **market_code**: 상권 코드 (예: DJ001, DJ002)
+        
+        ### 쿼리 파라미터
+        - **period_months**: 분석 기간 (월 단위, 기본값: 12)
+        
+        ### 응답 예시
+        ```json
+        {
+            "success": true,
+            "data": {
+                "market_code": "DJ001",
+                "market_name": "대전역 상권",
+                "current_monthly_traffic": 150000,
+                "previous_monthly_traffic": 145000,
+                "average_monthly_change": 3.4,
+                "total_change_period": 12.5,
+                "trend": "상승",
+                "grade": "A",
+                "score": 85,
+                "analysis": "유동인구가 지속적으로 증가하고 있어 상권 활성화가 우수한 상태입니다.",
+                "recommendations": [
+                    "고객 유입 증대를 위한 마케팅 강화",
+                    "체류시간 연장을 위한 서비스 개선"
+                ]
+            }
+        }
+        ```
+        
+        ### 등급 기준
+        - **A**: 80점 이상 (우수)
+        - **B**: 60-79점 (양호)
+        - **C**: 40-59점 (보통)
+        - **D**: 40점 미만 (주의)
+        
+        ### 에러 코드
+        - **404**: 상권 데이터를 찾을 수 없음
+        - **500**: 서버 내부 오류
+        ''')
     def get(self, market_code):
         """유동인구 변화량 분석"""
         try:

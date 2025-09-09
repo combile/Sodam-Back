@@ -106,7 +106,73 @@ def get_success_cases_browse():
 
 @support_tools_bp.route('/consultation-booking', methods=['POST'])
 def book_consultation():
-    """전문가 상담 예약"""
+    """
+    전문가 상담 예약
+    
+    전문가와의 상담을 예약합니다. 온라인/오프라인 상담이 가능합니다.
+    
+    ### 요청 본문
+    ```json
+    {
+        "expert_id": "EXP001",
+        "consultation_type": "온라인 상담",
+        "preferred_date": "2024-01-15",
+        "preferred_time": "오후",
+        "user_info": {
+            "name": "홍길동",
+            "phone": "010-1234-5678",
+            "email": "user@example.com",
+            "business_type": "식음료업",
+            "consultation_purpose": "창업 계획 수립"
+        }
+    }
+    ```
+    
+    ### 필수 파라미터
+    - **expert_id**: 전문가 ID
+    - **consultation_type**: 상담 유형 (온라인 상담, 오프라인 상담)
+    - **preferred_date**: 희망 날짜 (YYYY-MM-DD 형식)
+    - **preferred_time**: 희망 시간대 (오전, 오후, 저녁)
+    - **user_info**: 사용자 정보
+    
+    ### 응답 예시
+    ```json
+    {
+        "success": true,
+        "data": {
+            "message": "상담 예약이 접수되었습니다.",
+            "booking_info": {
+                "booking_id": "BK20240101120000",
+                "expert_id": "EXP001",
+                "consultation_type": "온라인 상담",
+                "preferred_date": "2024-01-15",
+                "preferred_time": "오후",
+                "status": "pending",
+                "estimated_duration": "30분",
+                "cost": "무료"
+            },
+            "next_steps": [
+                "예약 확인을 위해 담당자가 연락드릴 예정입니다.",
+                "상담 1일 전에 리마인더 메시지를 발송드립니다.",
+                "상담 당일 준비사항을 안내드립니다."
+            ]
+        }
+    }
+    ```
+    
+    ### 상담 유형
+    - **온라인 상담**: 화상회의를 통한 상담 (30분, 무료)
+    - **오프라인 상담**: 대면 상담 (1시간, 무료)
+    
+    ### 시간대
+    - **오전**: 09:00 - 12:00
+    - **오후**: 13:00 - 17:00
+    - **저녁**: 18:00 - 21:00
+    
+    ### 에러 코드
+    - **400**: 필수 파라미터 누락
+    - **500**: 서버 내부 오류
+    """
     try:
         data = request.get_json() or {}
         

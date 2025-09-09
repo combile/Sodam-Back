@@ -31,7 +31,50 @@ def industry_analysis():
 
 @industry_analysis_bp.route('/survival-rates', methods=['GET'])
 def get_survival_rates():
-    """업종별 생존율 조회"""
+    """
+    업종별 생존율 조회
+    
+    각 업종별 사업체 생존율을 조회합니다. 창업 후 특정 기간 동안 운영을 지속하는 비율을 제공합니다.
+    
+    ### 쿼리 파라미터
+    - **industry**: 특정 업종 필터 (선택사항)
+    - **period**: 분석 기간 (1year, 3year, 5year, 기본값: 1year)
+    
+    ### 지원 업종
+    - 식음료업, 쇼핑업, 숙박업, 여가서비스업, 운송업
+    - 의료업, 교육업, 문화업, 스포츠업, 기타서비스업
+    
+    ### 응답 예시
+    ```json
+    {
+        "success": true,
+        "data": {
+            "survival_rates": [
+                {
+                    "industry": "식음료업",
+                    "survival_rate": 75.0,
+                    "period": "1year",
+                    "sample_size": 500,
+                    "confidence_level": 95
+                }
+            ],
+            "period": "1year",
+            "last_updated": "2024-01-01"
+        },
+        "message": "업종별 생존율을 성공적으로 조회했습니다.",
+        "timestamp": "2024-01-01T00:00:00Z"
+    }
+    ```
+    
+    ### 생존율 해석
+    - **80% 이상**: 매우 안정적인 업종
+    - **60-79%**: 안정적인 업종
+    - **40-59%**: 보통 수준의 업종
+    - **40% 미만**: 위험한 업종
+    
+    ### 에러 코드
+    - **500**: 서버 내부 오류
+    """
     try:
         # 쿼리 파라미터
         industry = request.args.get('industry')

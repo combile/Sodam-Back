@@ -9,7 +9,62 @@ map_visualization_service = MapVisualizationService()
 
 @map_visualization_bp.route('/heatmap', methods=['GET'])
 def get_market_heatmap_data():
-    """상권 히트맵 데이터 생성"""
+    """
+    상권 히트맵 데이터 생성
+    
+    상권별 특정 지표를 히트맵 형태로 시각화할 수 있는 데이터를 생성합니다.
+    
+    ### 쿼리 파라미터
+    - **region**: 지역 필터 (선택사항, 기본값: 전체)
+    - **analysis_type**: 분석 유형 (기본값: health_score)
+    
+    ### 지원 분석 유형
+    - **health_score**: 상권 건강 점수 (녹색=우수, 노란색=보통, 빨간색=주의)
+    - **foot_traffic**: 유동인구 수준 (진한 색=높음, 연한 색=낮음)
+    - **competition**: 경쟁도 (빨간색=높음, 주황색=보통, 녹색=낮음)
+    - **growth_potential**: 성장 잠재력 (진한 색=높음, 연한 색=낮음)
+    
+    ### 응답 예시
+    ```json
+    {
+        "success": true,
+        "data": {
+            "analysis_type": "health_score",
+            "region": "대전광역시",
+            "heatmap_data": [
+                {
+                    "market_code": "DJ001",
+                    "market_name": "대전역 상권",
+                    "latitude": 36.3326,
+                    "longitude": 127.4342,
+                    "value": 85.5,
+                    "grade": "A",
+                    "color_intensity": 0.85
+                }
+            ],
+            "color_scale": {
+                "min": 0,
+                "max": 100,
+                "thresholds": {
+                    "excellent": 80,
+                    "good": 60,
+                    "average": 40,
+                    "poor": 0
+                }
+            }
+        }
+    }
+    ```
+    
+    ### 히트맵 사용법
+    1. 응답 데이터의 `latitude`, `longitude`를 사용하여 지도에 마커 표시
+    2. `color_intensity` 값을 사용하여 색상 강도 조절
+    3. `value`와 `grade`를 사용하여 툴팁 또는 범례 표시
+    
+    ### 에러 코드
+    - **400**: 지원하지 않는 분석 유형
+    - **500**: 서버 내부 오류
+    """
     try:
         region = request.args.get('region')
         analysis_type = request.args.get('analysis_type', 'health_score')

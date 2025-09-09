@@ -9,7 +9,57 @@ risk_analysis_service = RiskAnalysisService()
 
 @risk_classification_bp.route('/classify/<string:market_code>', methods=['POST'])
 def classify_risk_type(market_code: str):
-    """4가지 리스크 유형 자동 분류"""
+    """
+    4가지 리스크 유형 자동 분류
+    
+    상권의 특성을 분석하여 4가지 리스크 유형 중 하나로 자동 분류합니다.
+    
+    ### 경로 파라미터
+    - **market_code**: 상권 코드 (예: DJ001, DJ002)
+    
+    ### 요청 본문
+    ```json
+    {
+        "industry": "식음료업"
+    }
+    ```
+    
+    ### 리스크 유형
+    1. **유입 저조형**: 유동인구와 매출 증가율이 낮아 상권 활성화가 저조한 상태
+    2. **과포화 경쟁형**: 동일업종 사업체가 과도하게 많아 경쟁이 치열한 상태
+    3. **소비력 약형**: 지역 소비력이 부족하여 매출 창출이 어려운 상태
+    4. **성장 잠재형**: 성장 잠재력이 제한적이어서 장기적 발전이 어려운 상태
+    
+    ### 응답 예시
+    ```json
+    {
+        "success": true,
+        "data": {
+            "market_code": "DJ001",
+            "industry": "식음료업",
+            "risk_type": "과포화 경쟁형",
+            "risk_score": 75.5,
+            "health_score": 65.2,
+            "confidence": 0.85,
+            "analysis_data": {
+                "competition_density": 8.5,
+                "market_saturation": 7.2,
+                "growth_potential": 4.1
+            },
+            "key_indicators": [
+                "동일업종 과밀",
+                "가격 경쟁 심화",
+                "고객 분산"
+            ]
+        }
+    }
+    ```
+    
+    ### 에러 코드
+    - **400**: 필수 파라미터 누락
+    - **404**: 상권 데이터를 찾을 수 없음
+    - **500**: 서버 내부 오류
+    """
     try:
         data = request.get_json() or {}
         industry = data.get('industry')

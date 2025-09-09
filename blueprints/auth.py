@@ -9,21 +9,81 @@ auth_ns = Namespace('auth', description='사용자 인증 및 회원가입 API')
 
 # 모델 정의
 login_model = auth_ns.model('LoginRequest', {
-    'username': fields.String(required=True, description='사용자명', example='daejeon_user'),
-    'password': fields.String(required=True, description='비밀번호', example='password123!')
+    'username': fields.String(
+        required=True, 
+        description='사용자 아이디 (영문, 숫자, 3-20자)', 
+        example='daejeon_user',
+        min_length=3,
+        max_length=20
+    ),
+    'password': fields.String(
+        required=True, 
+        description='비밀번호 (8자 이상, 영문, 숫자, 특수문자 포함)', 
+        example='password123!',
+        min_length=8
+    )
 })
 
 register_model = auth_ns.model('RegisterRequest', {
-    'username': fields.String(required=True, description='사용자명', example='daejeon_user'),
-    'email': fields.String(required=True, description='이메일', example='user@daejeon.kr'),
-    'password': fields.String(required=True, description='비밀번호', example='password123!'),
-    'name': fields.String(required=True, description='이름', example='홍길동'),
-    'nickname': fields.String(description='닉네임', example='대전사업가'),
-    'userType': fields.String(description='사용자 유형', example='ENTREPRENEUR'),
-    'businessStage': fields.String(description='사업 단계', example='PLANNING'),
-    'phone': fields.String(description='전화번호', example='010-1234-5678'),
-    'interestedBusinessTypes': fields.List(fields.String, description='관심 업종', example=['카페', '음식점']),
-    'preferredAreas': fields.List(fields.String, description='선호 지역', example=['중구', '서구'])
+    'username': fields.String(
+        required=True, 
+        description='사용자 아이디 (영문, 숫자, 3-20자, 중복 불가)', 
+        example='daejeon_user',
+        min_length=3,
+        max_length=20
+    ),
+    'email': fields.String(
+        required=True, 
+        description='이메일 주소 (유효한 이메일 형식, 중복 불가)', 
+        example='user@daejeon.kr',
+        pattern=r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    ),
+    'password': fields.String(
+        required=True, 
+        description='비밀번호 (8자 이상, 영문, 숫자, 특수문자 포함)', 
+        example='password123!',
+        min_length=8
+    ),
+    'name': fields.String(
+        required=True, 
+        description='실명 (한글, 영문, 2-10자)', 
+        example='홍길동',
+        min_length=2,
+        max_length=10
+    ),
+    'nickname': fields.String(
+        description='닉네임 (선택사항, 2-10자)', 
+        example='대전사업가',
+        min_length=2,
+        max_length=10
+    ),
+    'userType': fields.String(
+        description='사용자 유형', 
+        example='ENTREPRENEUR',
+        enum=['ENTREPRENEUR', 'BUSINESS_OWNER', 'INVESTOR']
+    ),
+    'businessStage': fields.String(
+        description='사업 단계', 
+        example='PLANNING',
+        enum=['PLANNING', 'STARTUP', 'OPERATING']
+    ),
+    'phone': fields.String(
+        description='전화번호 (010-XXXX-XXXX 형식)', 
+        example='010-1234-5678',
+        pattern=r'^010-\d{4}-\d{4}$'
+    ),
+    'interestedBusinessTypes': fields.List(
+        fields.String, 
+        description='관심 업종 목록 (다중 선택 가능)', 
+        example=['식음료업', '쇼핑업'],
+        enum=['식음료업', '쇼핑업', '숙박업', '여가서비스업', '운송업', '의료업', '교육업', '문화업', '스포츠업', '기타서비스업']
+    ),
+    'preferredAreas': fields.List(
+        fields.String, 
+        description='선호 지역 목록 (다중 선택 가능)', 
+        example=['중구', '서구'],
+        enum=['동구', '중구', '서구', '유성구', '대덕구']
+    )
 })
 
 success_response = auth_ns.model('SuccessResponse', {
@@ -41,7 +101,48 @@ error_response = auth_ns.model('ErrorResponse', {
 class Register(Resource):
     @auth_ns.expect(register_model)
     @auth_ns.marshal_with(success_response)
-    @auth_ns.doc('register', description='사용자 회원가입')
+    @auth_ns.doc('register', 
+        description='''
+        ## 사용자 회원가입
+        
+        새로운 사용자를 시스템에 등록합니다.
+        
+        ### 요청 파라미터
+        - **username**: 사용자 아이디 (필수, 3-20자, 영문/숫자)
+        - **email**: 이메일 주소 (필수, 유효한 이메일 형식)
+        - **password**: 비밀번호 (필수, 8자 이상)
+        - **name**: 실명 (필수, 2-10자)
+        - **nickname**: 닉네임 (선택, 2-10자)
+        - **userType**: 사용자 유형 (선택, ENTREPRENEUR/BUSINESS_OWNER/INVESTOR)
+        - **businessStage**: 사업 단계 (선택, PLANNING/STARTUP/OPERATING)
+        - **phone**: 전화번호 (선택, 010-XXXX-XXXX 형식)
+        - **interestedBusinessTypes**: 관심 업종 (선택, 배열)
+        - **preferredAreas**: 선호 지역 (선택, 배열)
+        
+        ### 응답 예시
+        ```json
+        {
+            "success": true,
+            "message": "회원가입이 완료되었습니다.",
+            "data": {
+                "user": {
+                    "id": 1,
+                    "username": "daejeon_user",
+                    "email": "user@daejeon.kr",
+                    "name": "홍길동",
+                    "userType": "ENTREPRENEUR",
+                    "businessStage": "PLANNING"
+                }
+            },
+            "timestamp": "2024-01-01T00:00:00Z"
+        }
+        ```
+        
+        ### 에러 코드
+        - **400**: 필수 파라미터 누락 또는 유효성 검사 실패
+        - **409**: 아이디 또는 이메일 중복
+        - **500**: 서버 내부 오류
+        ''')
     def post(self):
         data = request.get_json() or {}
         username = (data.get("username") or "").strip()
@@ -131,7 +232,48 @@ class Register(Resource):
 class Login(Resource):
     @auth_ns.expect(login_model)
     @auth_ns.marshal_with(success_response)
-    @auth_ns.doc('login', description='사용자 로그인')
+    @auth_ns.doc('login', 
+        description='''
+        ## 사용자 로그인
+        
+        사용자 인증을 통해 JWT 액세스 토큰을 발급받습니다.
+        
+        ### 요청 파라미터
+        - **username**: 사용자 아이디 (필수)
+        - **password**: 비밀번호 (필수)
+        
+        ### 응답 예시
+        ```json
+        {
+            "success": true,
+            "message": "로그인에 성공했습니다.",
+            "data": {
+                "accessToken": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...",
+                "user": {
+                    "id": 1,
+                    "username": "daejeon_user",
+                    "email": "user@daejeon.kr",
+                    "name": "홍길동",
+                    "userType": "ENTREPRENEUR",
+                    "businessStage": "PLANNING"
+                }
+            },
+            "timestamp": "2024-01-01T00:00:00Z"
+        }
+        ```
+        
+        ### JWT 토큰 사용법
+        발급받은 토큰을 Authorization 헤더에 포함하여 API 요청:
+        ```
+        Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...
+        ```
+        
+        ### 에러 코드
+        - **400**: 아이디 또는 비밀번호 누락
+        - **401**: 잘못된 아이디 또는 비밀번호
+        - **403**: 비활성화된 계정
+        - **500**: 서버 내부 오류
+        ''')
     def post(self):
         data = request.get_json() or {}
         username = (data.get("username") or "").strip()  # 아이디로 로그인

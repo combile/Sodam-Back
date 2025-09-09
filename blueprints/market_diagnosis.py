@@ -30,7 +30,48 @@ def market_diagnosis():
 
 @market_diagnosis_bp.route('/markets', methods=['GET'])
 def get_markets():
-    """상권 목록 조회"""
+    """
+    상권 목록 조회
+    
+    대전광역시 내 상권 목록을 조회합니다. 지역구, 상권 유형별로 필터링이 가능합니다.
+    
+    ### 쿼리 파라미터
+    - **district**: 지역구 필터 (동구, 중구, 서구, 유성구, 대덕구)
+    - **market_type**: 상권 유형 필터 (상업지구, 주거지구, 혼합지구)
+    - **limit**: 페이지당 결과 수 (기본값: 50, 최대: 100)
+    - **offset**: 페이지 오프셋 (기본값: 0)
+    
+    ### 응답 예시
+    ```json
+    {
+        "success": true,
+        "data": {
+            "markets": [
+                {
+                    "market_code": "DJ001",
+                    "market_name": "대전역 상권",
+                    "city_name": "대전광역시",
+                    "district_name": "동구",
+                    "market_type": "상업지구",
+                    "coordinates": "36.3326,127.4342"
+                }
+            ],
+            "pagination": {
+                "total": 26,
+                "limit": 50,
+                "offset": 0,
+                "has_more": false
+            }
+        },
+        "message": "상권 목록을 성공적으로 조회했습니다.",
+        "timestamp": "2024-01-01T00:00:00Z"
+    }
+    ```
+    
+    ### 에러 코드
+    - **404**: 상권 데이터를 찾을 수 없음
+    - **500**: 서버 내부 오류
+    """
     try:
         # 쿼리 파라미터
         district = request.args.get('district')

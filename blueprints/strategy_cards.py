@@ -9,7 +9,75 @@ strategy_card_service = StrategyCardService()
 
 @strategy_cards_bp.route('/generate', methods=['POST'])
 def generate_strategy_cards():
-    """맞춤형 전략 카드 생성"""
+    """
+    맞춤형 전략 카드 생성
+    
+    상권, 업종, 리스크 유형, 사용자 프로필을 기반으로 맞춤형 사업 전략 카드를 생성합니다.
+    
+    ### 요청 본문
+    ```json
+    {
+        "market_code": "DJ001",
+        "industry": "식음료업",
+        "risk_type": "과포화 경쟁형",
+        "user_profile": {
+            "userType": "ENTREPRENEUR",
+            "businessStage": "PLANNING",
+            "experience": "초보",
+            "budget": "중간"
+        }
+    }
+    ```
+    
+    ### 필수 파라미터
+    - **market_code**: 상권 코드
+    - **industry**: 업종
+    - **risk_type**: 리스크 유형 (유입 저조형, 과포화 경쟁형, 소비력 약형, 성장 잠재형)
+    - **user_profile**: 사용자 프로필 정보
+    
+    ### 응답 예시
+    ```json
+    {
+        "success": true,
+        "data": {
+            "strategy_cards": [
+                {
+                    "id": "STR001",
+                    "category": "마케팅",
+                    "title": "차별화된 브랜딩 전략",
+                    "description": "경쟁이 치열한 환경에서 차별화된 브랜드 아이덴티티 구축",
+                    "difficulty": "중간",
+                    "estimated_time": "2-3개월",
+                    "success_rate": "70%",
+                    "checklist": [
+                        "브랜드 컨셉 정의",
+                        "로고 및 디자인 제작",
+                        "마케팅 메시지 개발"
+                    ],
+                    "tips": [
+                        "고유한 스토리텔링 활용",
+                        "타겟 고객층 명확히 정의"
+                    ]
+                }
+            ],
+            "total_cards": 5,
+            "generated_at": "2024-01-01T00:00:00Z"
+        }
+    }
+    ```
+    
+    ### 전략 카테고리
+    - **마케팅**: 브랜딩, 홍보, 고객 유치
+    - **경쟁력**: 차별화, 품질 향상, 서비스 개선
+    - **운영**: 효율성, 비용 절감, 프로세스 개선
+    - **혁신**: 신기술 도입, 새로운 비즈니스 모델
+    - **채널**: 판매 채널 확대, 온라인 진출
+    - **고객관리**: 고객 충성도, 관계 관리
+    
+    ### 에러 코드
+    - **400**: 필수 파라미터 누락
+    - **500**: 서버 내부 오류
+    """
     try:
         data = request.get_json() or {}
         

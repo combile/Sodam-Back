@@ -30,10 +30,47 @@ def create_app(config_object: type = Config) -> Flask:
         app,
         version='1.0',
         title='소담(SODAM) API',
-        description='소상공인을 위한 상권 진단 및 사업 추천 플랫폼 API',
+        description='''
+        # 소담(SODAM) - 소상공인 상권 진단 및 사업 추천 플랫폼 API
+        
+        ## 개요
+        소담(SODAM)은 소상공인을 위한 종합적인 상권 진단 및 사업 추천 플랫폼입니다.
+        대전광역시를 중심으로 한 상권 데이터를 기반으로 다음과 같은 서비스를 제공합니다:
+        
+        ## 주요 기능
+        - **상권 진단**: 유동인구, 매출, 경쟁도 등 종합 분석
+        - **업종별 분석**: 생존율, 폐업율, 리스크 분석
+        - **지역별 분석**: 인구, 임대료, 경제 지표 분석
+        - **리스크 분류**: 4가지 리스크 유형 자동 분류
+        - **전략 카드**: 맞춤형 사업 전략 제안
+        - **지원 도구**: 정책 지원, 전문가 상담 연결
+        - **지도 시각화**: 히트맵, 클러스터 분석
+        
+        ## API 사용법
+        1. **인증**: JWT 토큰 기반 인증 (회원가입/로그인 필요)
+        2. **요청**: JSON 형태로 데이터 전송
+        3. **응답**: 표준화된 JSON 응답 형식
+        4. **에러 처리**: HTTP 상태 코드와 상세 에러 메시지
+        
+        ## 기본 URL
+        - 개발 서버: `http://localhost:5000`
+        - API 엔드포인트: `http://localhost:5000/api/v1`
+        - Swagger 문서: `http://localhost:5000/docs/`
+        
+        ## 지원 지역
+        - 대전광역시 (동구, 중구, 서구, 유성구, 대덕구)
+        
+        ## 지원 업종
+        - 식음료업, 쇼핑업, 숙박업, 여가서비스업, 운송업
+        - 의료업, 교육업, 문화업, 스포츠업, 기타서비스업
+        ''',
         doc='/docs/',  # Swagger UI 경로
         prefix='/api/v1',
-        catch_all_404s=True  # 404 에러를 API에서 처리
+        catch_all_404s=True,  # 404 에러를 API에서 처리
+        contact='SODAM Development Team',
+        contact_email='sodam@example.com',
+        license='MIT',
+        license_url='https://opensource.org/licenses/MIT'
     )
     
     # CORS 설정
