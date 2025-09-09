@@ -32,7 +32,8 @@ def create_app(config_object: type = Config) -> Flask:
         title='소담(SODAM) API',
         description='소상공인을 위한 상권 진단 및 사업 추천 플랫폼 API',
         doc='/swagger/',  # Swagger UI 경로
-        prefix='/api/v1'
+        prefix='/api/v1',
+        catch_all_404s=True  # 404 에러를 API에서 처리
     )
     
     # CORS 설정
@@ -243,7 +244,13 @@ def create_app(config_object: type = Config) -> Flask:
                     'health': '/health',
                     'swagger': '/swagger/',
                     'docs': '/docs/'
-                }
+                },
+                'available_apis': [
+                    'auth', 'market-diagnosis', 'industry-analysis', 
+                    'regional-analysis', 'scoring', 'recommendations',
+                    'core-diagnosis', 'risk-classification', 'strategy-cards',
+                    'support-tools', 'map-visualization'
+                ]
             }, 200
     
     @ns.route('/markets')
@@ -269,6 +276,82 @@ def create_app(config_object: type = Config) -> Flask:
                 'message': 'SODAM API 정상 작동',
                 'timestamp': datetime.now().isoformat(),
                 'status': 'success'
+            }, 200
+    
+    # API 엔드포인트 정보를 Swagger에 추가
+    @ns.route('/endpoints')
+    class AllEndpoints(Resource):
+        @ns.doc('all_endpoints')
+        def get(self):
+            """모든 API 엔드포인트 목록"""
+            return {
+                'auth': {
+                    'POST /auth/login': '사용자 로그인',
+                    'POST /auth/register': '사용자 회원가입'
+                },
+                'core-diagnosis': {
+                    'GET /core-diagnosis/foot-traffic/{market_code}': '유동인구 변화량 분석',
+                    'GET /core-diagnosis/card-sales/{market_code}': '카드매출 추이 분석',
+                    'GET /core-diagnosis/same-industry/{market_code}': '동일업종 수 분석',
+                    'GET /core-diagnosis/business-rates/{market_code}': '창업·폐업 비율 분석',
+                    'GET /core-diagnosis/dwell-time/{market_code}': '체류시간 분석',
+                    'POST /core-diagnosis/health-score/{market_code}': '상권 건강 점수 종합 산정',
+                    'POST /core-diagnosis/comprehensive/{market_code}': '종합 상권 진단'
+                },
+                'risk-classification': {
+                    'POST /risk-classification/classify/{market_code}': '4가지 리스크 유형 자동 분류',
+                    'POST /risk-classification/detailed-analysis/{market_code}': '특정 리스크 유형의 상세 분석',
+                    'GET /risk-classification/risk-types': '지원하는 리스크 유형 목록',
+                    'GET /risk-classification/mitigation-strategies': '리스크 완화 전략 목록'
+                },
+                'strategy-cards': {
+                    'POST /strategy-cards/generate': '맞춤형 전략 카드 생성',
+                    'GET /strategy-cards/checklist/{strategy_id}': '전략별 체크리스트 제공',
+                    'GET /strategy-cards/success-cases': '성공 사례 제공',
+                    'GET /strategy-cards/templates': '전략 템플릿 목록',
+                    'GET /strategy-cards/categories': '전략 카테고리 목록'
+                },
+                'support-tools': {
+                    'GET /support-tools/support-centers': '소상공인지원센터 정보 조회',
+                    'GET /support-tools/expert-consultation': '전문가 상담 예약 정보',
+                    'POST /support-tools/policy-recommendations': '지역 기반 맞춤 창업 지원 정책 추천',
+                    'GET /support-tools/success-cases': '유사 상권 성공 사례 브라우징',
+                    'POST /support-tools/consultation-booking': '전문가 상담 예약',
+                    'POST /support-tools/policy-application': '정책 신청'
+                },
+                'map-visualization': {
+                    'GET /map-visualization/heatmap': '상권 히트맵 데이터 생성',
+                    'POST /map-visualization/radius-analysis': '반경별 분석 결과',
+                    'GET /map-visualization/cluster-analysis': '상권 클러스터 분석',
+                    'GET /map-visualization/traffic-flow/{market_code}': '유동인구 흐름 분석',
+                    'GET /map-visualization/accessibility/{market_code}': '접근성 분석',
+                    'GET /map-visualization/analysis-types': '지원하는 분석 유형 목록'
+                },
+                'market-diagnosis': {
+                    'GET /market-diagnosis/markets': '상권 목록 조회',
+                    'GET /market-diagnosis/markets/{market_code}': '상권 상세 정보',
+                    'GET /market-diagnosis/districts': '구/군별 상권 통계'
+                },
+                'industry-analysis': {
+                    'GET /industry-analysis/closure-rates': '폐업율 분석',
+                    'GET /industry-analysis/risk-analysis': '리스크 분석',
+                    'GET /industry-analysis/survival-rates': '생존율 분석'
+                },
+                'regional-analysis': {
+                    'GET /regional-analysis/market-density': '상권 밀도',
+                    'GET /regional-analysis/population': '인구 통계',
+                    'GET /regional-analysis/rent-rates': '임대료 정보'
+                },
+                'scoring': {
+                    'POST /scoring/calculate': '종합 점수 계산',
+                    'POST /scoring/compare': '위치 비교'
+                },
+                'recommendations': {
+                    'GET /recommendations/industry-based': '업종별 추천',
+                    'POST /recommendations/personalized': '개인화 추천',
+                    'GET /recommendations/region-based': '지역별 추천',
+                    'GET /recommendations/similar-users': '유사 사용자 추천'
+                }
             }, 200
 
     # Blueprints 등록
