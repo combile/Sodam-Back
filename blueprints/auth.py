@@ -43,21 +43,21 @@ class Register(Resource):
     @auth_ns.marshal_with(success_response)
     @auth_ns.doc('register', description='사용자 회원가입')
     def post(self):
-    data = request.get_json() or {}
-    username = (data.get("username") or "").strip()
-    email = (data.get("email") or "").strip().lower()
-    password = (data.get("password") or "").strip()
-    name = (data.get("name") or "").strip()
-    nickname = (data.get("nickname") or "").strip()
-    user_type = data.get("userType", "ENTREPRENEUR")
-    business_stage = data.get("businessStage")
-    phone = data.get("phone")
-    interested_business_types = data.get("interestedBusinessTypes", [])
-    preferred_areas = data.get("preferredAreas", [])
-    profile_image = data.get("profileImage")
+        data = request.get_json() or {}
+        username = (data.get("username") or "").strip()
+        email = (data.get("email") or "").strip().lower()
+        password = (data.get("password") or "").strip()
+        name = (data.get("name") or "").strip()
+        nickname = (data.get("nickname") or "").strip()
+        user_type = data.get("userType", "ENTREPRENEUR")
+        business_stage = data.get("businessStage")
+        phone = data.get("phone")
+        interested_business_types = data.get("interestedBusinessTypes", [])
+        preferred_areas = data.get("preferredAreas", [])
+        profile_image = data.get("profileImage")
 
-    # 필수 필드 검증
-    if not username or not email or not password or not name:
+        # 필수 필드 검증
+        if not username or not email or not password or not name:
         return jsonify({
             "success": False,
             "error": {
@@ -133,11 +133,11 @@ class Login(Resource):
     @auth_ns.marshal_with(success_response)
     @auth_ns.doc('login', description='사용자 로그인')
     def post(self):
-    data = request.get_json() or {}
-    username = (data.get("username") or "").strip()  # 아이디로 로그인
-    password = (data.get("password") or "").strip()
+        data = request.get_json() or {}
+        username = (data.get("username") or "").strip()  # 아이디로 로그인
+        password = (data.get("password") or "").strip()
 
-    if not username or not password:
+        if not username or not password:
         return jsonify({
             "success": False,
             "error": {
