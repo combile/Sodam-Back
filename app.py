@@ -1,4 +1,5 @@
 from flask import Flask, request
+from flask_restx import Api
 from config import Config
 from extensions import db, migrate, bcrypt, jwt, cors
 from blueprints.auth import auth_bp
@@ -40,6 +41,16 @@ def create_app(config_object: type = Config) -> Flask:
         response.headers.add('Access-Control-Allow-Credentials', 'true')
         return response
 
+    # Swagger API 설정
+    api = Api(
+        app,
+        version='1.0',
+        title='소담(SODAM) API',
+        description='소상공인을 위한 상권 진단 및 사업 추천 플랫폼 API',
+        doc='/docs/',  # Swagger UI 경로
+        prefix='/api/v1'
+    )
+    
     # 간단한 헬스체크 엔드포인트
     @app.route('/health')
     def health_check():
@@ -47,7 +58,12 @@ def create_app(config_object: type = Config) -> Flask:
     
     @app.route('/')
     def root():
-        return {'message': 'SODAM Backend API', 'version': '1.0.0'}, 200
+        return {
+            'message': 'SODAM Backend API', 
+            'version': '1.0.0',
+            'docs': '/docs/',
+            'api': '/api/v1/'
+        }, 200
 
     # Blueprints (namespaced under /api/v1)
     app.register_blueprint(auth_bp, url_prefix="/api/v1/auth")
