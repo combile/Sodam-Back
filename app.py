@@ -278,6 +278,54 @@ def create_app(config_object: type = Config) -> Flask:
                 'status': 'success'
             }, 200
     
+    @ns.route('/test-real-apis')
+    class TestRealAPIs(Resource):
+        @ns.doc('test_real_apis')
+        def get(self):
+            """실제 블루프린트 API 테스트"""
+            import requests
+            base_url = request.host_url.rstrip('/')
+            
+            test_results = {}
+            
+            # 실제 API 엔드포인트들 테스트
+            test_endpoints = [
+                '/api/v1/auth/',
+                '/api/v1/market-diagnosis/',
+                '/api/v1/core-diagnosis/foot-traffic/10000',
+                '/api/v1/industry-analysis/',
+                '/api/v1/regional-analysis/',
+                '/api/v1/scoring/',
+                '/api/v1/recommendations/',
+                '/api/v1/risk-classification/',
+                '/api/v1/strategy-cards/',
+                '/api/v1/support-tools/',
+                '/api/v1/map-visualization/'
+            ]
+            
+            for endpoint in test_endpoints:
+                try:
+                    # 내부에서 직접 호출
+                    with app.test_client() as client:
+                        response = client.get(endpoint)
+                        test_results[endpoint] = {
+                            'status_code': response.status_code,
+                            'success': response.status_code < 400,
+                            'message': 'OK' if response.status_code < 400 else 'Error'
+                        }
+                except Exception as e:
+                    test_results[endpoint] = {
+                        'status_code': 500,
+                        'success': False,
+                        'message': str(e)
+                    }
+            
+            return {
+                'message': '실제 블루프린트 API 테스트 결과',
+                'timestamp': datetime.now().isoformat(),
+                'test_results': test_results
+            }, 200
+    
     # API 엔드포인트 정보를 Swagger에 추가
     @ns.route('/endpoints')
     class AllEndpoints(Resource):
