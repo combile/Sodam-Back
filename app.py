@@ -54,75 +54,10 @@ def create_app(config_object: type = Config) -> Flask:
         response.headers.add('Access-Control-Allow-Credentials', 'true')
         return response
 
-    # 기본 엔드포인트들
-    @app.route('/')
-    def root():
-        return {
-            'message': 'SODAM Backend API', 
-            'version': '1.0.0',
-            'status': 'running',
-            'endpoints': {
-                'health': '/health',
-                'api': '/api/v1/',
-                'docs': '/docs/'
-            }
-        }, 200
-    
+    # 기본 엔드포인트들 (Flask-RESTX와 충돌 방지)
     @app.route('/health')
     def health_check():
         return {'status': 'healthy', 'message': 'SODAM Backend API is running'}, 200
-    
-    @app.route('/api/v1/')
-    def api_info():
-        return {
-            'message': 'SODAM API v1',
-            'status': 'active',
-            'endpoints': [
-                '/api/v1/auth/',
-                '/api/v1/market-diagnosis/',
-                '/api/v1/industry-analysis/',
-                '/api/v1/regional-analysis/',
-                '/api/v1/scoring/',
-                '/api/v1/recommendations/',
-                '/api/v1/core-diagnosis/',
-                '/api/v1/risk-classification/',
-                '/api/v1/strategy-cards/',
-                '/api/v1/support-tools/',
-                '/api/v1/map-visualization/'
-            ],
-            'test_endpoints': {
-                'auth_login': 'POST /api/v1/auth/login',
-                'auth_register': 'POST /api/v1/auth/register',
-                'market_list': 'GET /api/v1/market-diagnosis/markets',
-                'health_check': 'GET /health'
-            }
-        }, 200
-    
-    # 테스트용 간단한 API 엔드포인트들
-    @app.route('/api/v1/test')
-    def test_api():
-        return {
-            'message': 'API 테스트 성공!',
-            'timestamp': datetime.now().isoformat(),
-            'status': 'working'
-        }, 200
-    
-    @app.route('/api/v1/markets')
-    def test_markets():
-        try:
-            from services.data_loader import DataLoader
-            data_loader = DataLoader()
-            markets = data_loader.get_market_list()
-            return {
-                'markets': markets[:10],  # 처음 10개만 반환
-                'total': len(markets),
-                'message': '실제 CSV 데이터에서 로드됨'
-            }, 200
-        except Exception as e:
-            return {
-                'error': str(e),
-                'message': 'CSV 데이터 로드 실패'
-            }, 500
     
     @app.route('/docs/')
     def docs():
@@ -295,6 +230,22 @@ def create_app(config_object: type = Config) -> Flask:
     })
     
     # Swagger 엔드포인트 추가
+    @ns.route('/')
+    class APIInfo(Resource):
+        @ns.doc('api_info')
+        def get(self):
+            """API 기본 정보"""
+            return {
+                'message': 'SODAM Backend API', 
+                'version': '1.0.0',
+                'status': 'running',
+                'endpoints': {
+                    'health': '/health',
+                    'swagger': '/swagger/',
+                    'docs': '/docs/'
+                }
+            }, 200
+    
     @ns.route('/markets')
     class MarketList(Resource):
         @ns.doc('get_markets')
