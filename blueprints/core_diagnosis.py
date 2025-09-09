@@ -1,14 +1,39 @@
-from flask import Blueprint, request, jsonify
+from flask import request, jsonify
+from flask_restx import Namespace, Resource, fields
 from services.core_diagnosis_service import CoreDiagnosisService
 from datetime import datetime
 from typing import Dict, List, Any
 
-core_diagnosis_bp = Blueprint('core_diagnosis', __name__, url_prefix='/api/v1/core-diagnosis')
+core_diagnosis_ns = Namespace('core-diagnosis', description='상권 진단 핵심 지표 API')
 
 core_diagnosis_service = CoreDiagnosisService()
 
-@core_diagnosis_bp.route('/foot-traffic/<string:market_code>', methods=['GET'])
-def get_foot_traffic_analysis(market_code: str):
+# 모델 정의
+foot_traffic_response = core_diagnosis_ns.model('FootTrafficResponse', {
+    'market_code': fields.String(description='상권 코드', example='DJ001'),
+    'market_name': fields.String(description='상권명', example='대전역 상권'),
+    'current_monthly_traffic': fields.Integer(description='현재 월 유동인구 (명)', example=150000),
+    'previous_monthly_traffic': fields.Integer(description='이전 월 유동인구 (명)', example=145000),
+    'average_monthly_change': fields.Float(description='월평균 변화율 (%)', example=3.4),
+    'total_change_period': fields.Float(description='기간 총 변화율 (%)', example=12.5),
+    'trend': fields.String(description='트렌드', example='상승', enum=['상승', '하락', '보합']),
+    'grade': fields.String(description='등급', example='A', enum=['A', 'B', 'C', 'D']),
+    'score': fields.Integer(description='점수 (0-100)', example=85),
+    'analysis': fields.String(description='분석 결과', example='유동인구가 지속적으로 증가하고 있어 상권 활성화가 우수한 상태입니다.'),
+    'recommendations': fields.List(fields.String, description='개선 권장사항', example=['고객 유입 증대를 위한 마케팅 강화', '체류시간 연장을 위한 서비스 개선'])
+})
+
+success_response = core_diagnosis_ns.model('SuccessResponse', {
+    'success': fields.Boolean(description='성공 여부', example=True),
+    'message': fields.String(description='응답 메시지', example='요청이 성공적으로 처리되었습니다.'),
+    'data': fields.Raw(description='응답 데이터')
+})
+
+@core_diagnosis_ns.route('/foot-traffic/<string:market_code>')
+class FootTrafficAnalysis(Resource):
+    @core_diagnosis_ns.marshal_with(success_response)
+    @core_diagnosis_ns.doc('foot_traffic', description='유동인구 변화량 분석')
+    def get(self, market_code):
     """유동인구 변화량 분석"""
     try:
         period_months = request.args.get('period_months', 12, type=int)

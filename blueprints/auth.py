@@ -1,13 +1,48 @@
-from flask import Blueprint, request, jsonify
+from flask import request, jsonify
+from flask_restx import Namespace, Resource, fields
 from extensions import db, bcrypt
 from models import User
 from flask_jwt_extended import create_access_token
 from datetime import datetime
 
-auth_bp = Blueprint("auth", __name__)
+auth_ns = Namespace('auth', description='사용자 인증 및 회원가입 API')
 
-@auth_bp.post("/register")
-def register():
+# 모델 정의
+login_model = auth_ns.model('LoginRequest', {
+    'username': fields.String(required=True, description='사용자명', example='daejeon_user'),
+    'password': fields.String(required=True, description='비밀번호', example='password123!')
+})
+
+register_model = auth_ns.model('RegisterRequest', {
+    'username': fields.String(required=True, description='사용자명', example='daejeon_user'),
+    'email': fields.String(required=True, description='이메일', example='user@daejeon.kr'),
+    'password': fields.String(required=True, description='비밀번호', example='password123!'),
+    'name': fields.String(required=True, description='이름', example='홍길동'),
+    'nickname': fields.String(description='닉네임', example='대전사업가'),
+    'userType': fields.String(description='사용자 유형', example='ENTREPRENEUR'),
+    'businessStage': fields.String(description='사업 단계', example='PLANNING'),
+    'phone': fields.String(description='전화번호', example='010-1234-5678'),
+    'interestedBusinessTypes': fields.List(fields.String, description='관심 업종', example=['카페', '음식점']),
+    'preferredAreas': fields.List(fields.String, description='선호 지역', example=['중구', '서구'])
+})
+
+success_response = auth_ns.model('SuccessResponse', {
+    'success': fields.Boolean(description='성공 여부', example=True),
+    'message': fields.String(description='응답 메시지', example='요청이 성공적으로 처리되었습니다.'),
+    'data': fields.Raw(description='응답 데이터')
+})
+
+error_response = auth_ns.model('ErrorResponse', {
+    'success': fields.Boolean(description='성공 여부', example=False),
+    'error': fields.Raw(description='에러 정보')
+})
+
+@auth_ns.route('/register')
+class Register(Resource):
+    @auth_ns.expect(register_model)
+    @auth_ns.marshal_with(success_response)
+    @auth_ns.doc('register', description='사용자 회원가입')
+    def post(self):
     data = request.get_json() or {}
     username = (data.get("username") or "").strip()
     email = (data.get("email") or "").strip().lower()
@@ -92,8 +127,12 @@ def register():
         "timestamp": datetime.utcnow().isoformat()
     }), 201
 
-@auth_bp.post("/login")
-def login():
+@auth_ns.route('/login')
+class Login(Resource):
+    @auth_ns.expect(login_model)
+    @auth_ns.marshal_with(success_response)
+    @auth_ns.doc('login', description='사용자 로그인')
+    def post(self):
     data = request.get_json() or {}
     username = (data.get("username") or "").strip()  # 아이디로 로그인
     password = (data.get("password") or "").strip()

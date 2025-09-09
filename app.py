@@ -3,13 +3,13 @@ from datetime import datetime
 from flask_restx import Api, Resource, fields
 from config import Config
 from extensions import db, migrate, bcrypt, jwt, cors
-from blueprints.auth import auth_bp
+from blueprints.auth import auth_ns
 from blueprints.market_diagnosis import market_diagnosis_bp
 from blueprints.industry_analysis import industry_analysis_bp
 from blueprints.regional_analysis import regional_analysis_bp
 from blueprints.scoring import scoring_bp
 from blueprints.recommendations import recommendations_bp
-from blueprints.core_diagnosis import core_diagnosis_bp
+from blueprints.core_diagnosis import core_diagnosis_ns
 from blueprints.risk_classification import risk_classification_bp
 from blueprints.strategy_cards import strategy_cards_bp
 from blueprints.support_tools import support_tools_bp
@@ -440,13 +440,13 @@ def create_app(config_object: type = Config) -> Flask:
                 return response.get_json(), response.status_code
 
     # Blueprints 등록
-    app.register_blueprint(auth_bp, url_prefix="/api/v1/auth")
+    api.add_namespace(auth_ns, path="/sodam/auth")
     app.register_blueprint(market_diagnosis_bp, url_prefix="/api/v1/market-diagnosis")
     app.register_blueprint(industry_analysis_bp, url_prefix="/api/v1/industry-analysis")
     app.register_blueprint(regional_analysis_bp, url_prefix="/api/v1/regional-analysis")
     app.register_blueprint(scoring_bp, url_prefix="/api/v1/scoring")
     app.register_blueprint(recommendations_bp, url_prefix="/api/v1/recommendations")
-    app.register_blueprint(core_diagnosis_bp, url_prefix="/api/v1/core-diagnosis")
+    api.add_namespace(core_diagnosis_ns, path="/sodam/core-diagnosis")
     app.register_blueprint(risk_classification_bp, url_prefix="/api/v1/risk-classification")
     app.register_blueprint(strategy_cards_bp, url_prefix="/api/v1/strategy-cards")
     app.register_blueprint(support_tools_bp, url_prefix="/api/v1/support-tools")
