@@ -204,6 +204,237 @@ def create_app(config_object: type = Config) -> Flask:
                 'test_results': test_results
             }, 200
     
+    @ns.route('/supported-industries')
+    class SupportedIndustries(Resource):
+        @ns.doc('supported_industries', 
+            description='''
+            ## 지원 업종 목록
+            
+            SODAM 플랫폼에서 지원하는 모든 업종 목록을 조회합니다.
+            프론트엔드에서 드롭다운, 체크박스 등의 UI 컴포넌트 생성 시 사용할 수 있습니다.
+            
+            ### 응답 예시
+            ```json
+            {
+                "success": true,
+                "data": {
+                    "total_industries": 10,
+                    "industries": [
+                        {
+                            "code": "food_beverage",
+                            "name": "식음료업",
+                            "description": "음식점, 카페, 베이커리 등",
+                            "category": "서비스업"
+                        }
+                    ],
+                    "categories": {
+                        "서비스업": ["식음료업", "쇼핑업", "숙박업", "여가서비스업", "운송업"],
+                        "전문업": ["의료업", "교육업", "문화업", "스포츠업", "기타서비스업"]
+                    }
+                }
+            }
+            ```
+            ''')
+        def get(self):
+            """지원 업종 목록 조회"""
+            industries = [
+                {
+                    "code": "food_beverage",
+                    "name": "식음료업",
+                    "description": "음식점, 카페, 베이커리, 주점 등",
+                    "category": "서비스업",
+                    "icon": "🍽️"
+                },
+                {
+                    "code": "retail",
+                    "name": "쇼핑업",
+                    "description": "소매업, 도매업, 온라인 쇼핑몰 등",
+                    "category": "서비스업",
+                    "icon": "🛍️"
+                },
+                {
+                    "code": "accommodation",
+                    "name": "숙박업",
+                    "description": "호텔, 펜션, 게스트하우스 등",
+                    "category": "서비스업",
+                    "icon": "🏨"
+                },
+                {
+                    "code": "leisure",
+                    "name": "여가서비스업",
+                    "description": "헬스클럽, 노래방, PC방, 게임장 등",
+                    "category": "서비스업",
+                    "icon": "🎮"
+                },
+                {
+                    "code": "transportation",
+                    "name": "운송업",
+                    "description": "택시, 배달, 물류, 운송 서비스 등",
+                    "category": "서비스업",
+                    "icon": "🚗"
+                },
+                {
+                    "code": "medical",
+                    "name": "의료업",
+                    "description": "병원, 약국, 의료기기, 헬스케어 등",
+                    "category": "전문업",
+                    "icon": "🏥"
+                },
+                {
+                    "code": "education",
+                    "name": "교육업",
+                    "description": "학원, 과외, 온라인 교육, 교육 콘텐츠 등",
+                    "category": "전문업",
+                    "icon": "📚"
+                },
+                {
+                    "code": "culture",
+                    "name": "문화업",
+                    "description": "영화관, 전시관, 공연장, 문화센터 등",
+                    "category": "전문업",
+                    "icon": "🎭"
+                },
+                {
+                    "code": "sports",
+                    "name": "스포츠업",
+                    "description": "체육관, 스포츠 용품, 스포츠 교육 등",
+                    "category": "전문업",
+                    "icon": "⚽"
+                },
+                {
+                    "code": "other_services",
+                    "name": "기타서비스업",
+                    "description": "미용실, 세탁소, 수리업, 기타 서비스 등",
+                    "category": "전문업",
+                    "icon": "🔧"
+                }
+            ]
+            
+            # 카테고리별 분류
+            categories = {}
+            for industry in industries:
+                category = industry["category"]
+                if category not in categories:
+                    categories[category] = []
+                categories[category].append(industry["name"])
+            
+            return {
+                "success": True,
+                "data": {
+                    "total_industries": len(industries),
+                    "industries": industries,
+                    "categories": categories,
+                    "last_updated": "2024-01-01"
+                },
+                "message": "지원 업종 목록을 성공적으로 조회했습니다.",
+                "timestamp": datetime.now().isoformat()
+            }, 200
+    
+    @ns.route('/supported-regions')
+    class SupportedRegions(Resource):
+        @ns.doc('supported_regions',
+            description='''
+            ## 지원 지역 목록
+            
+            SODAM 플랫폼에서 지원하는 모든 지역 목록을 조회합니다.
+            대전광역시를 중심으로 한 지역 정보를 제공합니다.
+            
+            ### 응답 예시
+            ```json
+            {
+                "success": true,
+                "data": {
+                    "total_regions": 5,
+                    "regions": [
+                        {
+                            "code": "dong_gu",
+                            "name": "동구",
+                            "full_name": "대전광역시 동구",
+                            "population": 95000,
+                            "area_km2": 136.5,
+                            "market_count": 4
+                        }
+                    ],
+                    "city_info": {
+                        "name": "대전광역시",
+                        "total_population": 1440000,
+                        "total_area": 539.2,
+                        "total_markets": 26
+                    }
+                }
+            }
+            ```
+            ''')
+        def get(self):
+            """지원 지역 목록 조회"""
+            regions = [
+                {
+                    "code": "dong_gu",
+                    "name": "동구",
+                    "full_name": "대전광역시 동구",
+                    "population": 95000,
+                    "area_km2": 136.5,
+                    "market_count": 4,
+                    "description": "대전의 동쪽 지역, 주거지역 중심"
+                },
+                {
+                    "code": "jung_gu",
+                    "name": "중구",
+                    "full_name": "대전광역시 중구",
+                    "population": 120000,
+                    "area_km2": 62.1,
+                    "market_count": 2,
+                    "description": "대전의 중심가, 상업지역 중심"
+                },
+                {
+                    "code": "seo_gu",
+                    "name": "서구",
+                    "full_name": "대전광역시 서구",
+                    "population": 180000,
+                    "area_km2": 95.2,
+                    "market_count": 11,
+                    "description": "대전의 서쪽 지역, 신도시 개발지역"
+                },
+                {
+                    "code": "yuseong_gu",
+                    "name": "유성구",
+                    "full_name": "대전광역시 유성구",
+                    "population": 220000,
+                    "area_km2": 177.0,
+                    "market_count": 6,
+                    "description": "대덕연구개발특구, 대학가 지역"
+                },
+                {
+                    "code": "daedeok_gu",
+                    "name": "대덕구",
+                    "full_name": "대전광역시 대덕구",
+                    "population": 75000,
+                    "area_km2": 68.4,
+                    "market_count": 3,
+                    "description": "대덕연구개발특구, 산업단지 지역"
+                }
+            ]
+            
+            city_info = {
+                "name": "대전광역시",
+                "total_population": sum(region["population"] for region in regions),
+                "total_area": sum(region["area_km2"] for region in regions),
+                "total_markets": sum(region["market_count"] for region in regions),
+                "description": "대한민국 중부에 위치한 광역시, 과학기술 특화 도시"
+            }
+            
+            return {
+                "success": True,
+                "data": {
+                    "total_regions": len(regions),
+                    "regions": regions,
+                    "city_info": city_info,
+                    "last_updated": "2024-01-01"
+                },
+                "message": "지원 지역 목록을 성공적으로 조회했습니다.",
+                "timestamp": datetime.now().isoformat()
+            }, 200
+    
     # 실제 블루프린트 엔드포인트들을 Swagger에 등록
     
     # 인증 API
