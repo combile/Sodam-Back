@@ -138,8 +138,13 @@ python run_server.py
 
 ### API 서버
 
+**로컬 개발 환경:**
 - **URL**: `http://localhost:5002`
 - **API 엔드포인트**: `http://localhost:5002/api/v1/`
+
+**배포된 서버:**
+- **URL**: `https://port-0-sodam-back-lyo9x8ghce54051e.sel5.cloudtype.app`
+- **API 엔드포인트**: `https://port-0-sodam-back-lyo9x8ghce54051e.sel5.cloudtype.app/api/v1/`
 
 ### Swagger 문서 서버
 
@@ -215,7 +220,11 @@ python run_server.py
 ### 헬스 체크
 
 ```bash
+# 로컬 환경
 curl -f http://localhost:5002/api/v1/market-diagnosis/markets
+
+# 배포된 서버
+curl -f https://port-0-sodam-back-lyo9x8ghce54051e.sel5.cloudtype.app/api/v1/market-diagnosis/markets
 ```
 
 ### 로그 모니터링

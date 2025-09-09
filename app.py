@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 from config import Config
 from extensions import db, migrate, bcrypt, jwt, cors
 from blueprints.auth import auth_bp
@@ -24,7 +24,11 @@ def create_app(config_object: type = Config) -> Flask:
     jwt.init_app(app)
     cors.init_app(app, resources={
         r"/api/*": {
-            "origins": ["http://localhost:3000", "http://127.0.0.1:3000"],
+            "origins": [
+                "http://localhost:3000", 
+                "http://127.0.0.1:3000",
+                "https://port-0-sodam-back-lyo9x8ghce54051e.sel5.cloudtype.app"
+            ],
             "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
             "allow_headers": ["Content-Type", "Authorization", "X-Requested-With"],
             "supports_credentials": True
@@ -34,7 +38,17 @@ def create_app(config_object: type = Config) -> Flask:
     # CORS 헤더를 모든 응답에 추가
     @app.after_request
     def after_request(response):
-        response.headers.add('Access-Control-Allow-Origin', 'http://localhost:3000')
+        # 요청의 Origin을 확인하여 적절한 CORS 헤더 설정
+        origin = request.headers.get('Origin')
+        allowed_origins = [
+            'http://localhost:3000',
+            'http://127.0.0.1:3000',
+            'https://port-0-sodam-back-lyo9x8ghce54051e.sel5.cloudtype.app'
+        ]
+        
+        if origin in allowed_origins:
+            response.headers.add('Access-Control-Allow-Origin', origin)
+        
         response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,X-Requested-With')
         response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
         response.headers.add('Access-Control-Allow-Credentials', 'true')
