@@ -60,10 +60,6 @@ def create_app(config_object: type = Config) -> Flask:
     def health_check():
         return {'status': 'healthy', 'message': 'SODAM Backend API is running'}, 200
     
-    @app.route('/docs/')
-    def docs():
-        return '''
-        <!DOCTYPE html>
         <html>
         <head>
             <title>SODAM API Documentation</title>
