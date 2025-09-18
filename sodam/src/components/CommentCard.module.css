@@ -1,0 +1,191 @@
+.commentCard {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  position: relative;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+}
+
+.commentCard:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+.acceptedComment {
+  background: #f0f8f0;
+  border: 2px solid #5fc24a;
+}
+
+.acceptedBadge {
+  position: absolute;
+  top: -10px;
+  right: 20px;
+  background: #5fc24a;
+  color: white;
+  padding: 6px 14px;
+  border-radius: 16px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.commentContent {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #1a1a1a;
+  margin-bottom: 16px;
+  white-space: pre-wrap;
+  font-weight: 400;
+}
+
+.commentFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.commentAuthor {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.authorProfile {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid #f8f9fa;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.authorImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 50%;
+}
+
+.authorDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.authorNameRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.authorName {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.authorLevel {
+  background: #5fc24a;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.authorType {
+  font-size: 11px;
+  color: #666;
+}
+
+.commentActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.likeButton {
+  background: none;
+  border: transparent;
+  border-radius: 16px;
+  padding: 1px 2px;
+  font-size: 11px;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.likeButton:hover {
+  background: #f5f5f5;
+  border-color: #ccc;
+}
+
+.liked {
+  background: #e3f2fd;
+  border-color: #2196f3;
+  color: #1976d2;
+}
+
+.acceptButton {
+  background: #5fc24a;
+  color: white;
+  border: none;
+  border-radius: 16px;
+  padding: 4px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.acceptButton:hover {
+  background: #4caf50;
+  transform: translateY(-1px);
+}
+
+.acceptedBadge .material-icons {
+  font-size: 16px;
+  margin-right: 4px;
+}
+
+.likeButton .material-icons {
+  font-size: 14px;
+}
+
+.commentDate {
+  font-size: 11px;
+  color: #999;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .commentCard {
+    padding: 12px;
+    margin-bottom: 8px;
+  }
+
+  .commentContent {
+    font-size: 13px;
+  }
+
+  .commentFooter {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .commentActions {
+    width: 100%;
+    justify-content: space-between;
+  }
+}

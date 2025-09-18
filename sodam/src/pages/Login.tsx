@@ -7,15 +7,15 @@ import kakaoIcon from "../assets/icon-kakao.svg";
 import naverIcon from "../assets/icon-naver.svg";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState(""); // 아이디로 변경
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleLogin = async () => {
-    if (!email || !password) {
-      setError("이메일과 비밀번호를 입력해주세요.");
+    if (!username || !password) {
+      setError("아이디와 비밀번호를 입력해주세요.");
       return;
     }
 
@@ -23,11 +23,11 @@ const Login = () => {
     setError("");
 
     try {
-      const response = await authAPI.login({ email, password });
-      authAPI.saveToken(response.access_token, response.user);
+      const response = await authAPI.login({ username, password });
+      authAPI.saveToken(response.data.accessToken, response.data.user);
       navigate("/");
     } catch (err: any) {
-      setError(err.response?.data?.message || "로그인에 실패했습니다.");
+      setError(err.response?.data?.error?.message || "로그인에 실패했습니다.");
     } finally {
       setLoading(false);
     }
@@ -61,10 +61,10 @@ const Login = () => {
         {error && <div className={styles.errorMessage}>{error}</div>}
 
         <input
-          type="email"
-          placeholder="이메일을 입력해주세요"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          type="text"
+          placeholder="아이디를 입력해주세요"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
           className={styles.input}
           disabled={loading}
         />

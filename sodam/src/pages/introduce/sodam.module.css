@@ -4,13 +4,12 @@
 }
 /* 폰트 설정 - 시스템 폰트 사용 */
 .container {
-  min-height: 100vh;
+  flex: 1;
   background: #ffffff;
   color: #333333;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji",
     "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  padding-top: 80px;
 }
 
 /* Hero Section - 건드리지 않음 */

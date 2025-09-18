@@ -1,0 +1,235 @@
+.processContainer {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  margin-bottom: 20px;
+}
+
+.processTitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.progressPercentage {
+  font-size: 16px;
+  font-weight: 600;
+  color: #5789ff;
+  background: rgba(87, 137, 255, 0.1);
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px solid rgba(87, 137, 255, 0.2);
+}
+
+.progressBar {
+  width: 100%;
+  height: 8px;
+  background: #e1e8ed;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, #5789ff 0%, #7ddb69 100%);
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+.processIcon {
+  width: 28px;
+  height: 28px;
+  background: linear-gradient(135deg, #5789ff 0%, #7ddb69 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 16px;
+}
+
+.processSteps {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.processStep {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+}
+
+.processStep:hover {
+  background: #e9ecef;
+  transform: translateX(4px);
+}
+
+.processStep.current {
+  background: #e3f2fd;
+  border-color: #5789ff;
+  box-shadow: 0 0 0 2px rgba(87, 137, 255, 0.1);
+}
+
+.processStep.completed {
+  background: #e8f5e8;
+  border-color: #27ae60;
+}
+
+.stepNumber {
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #5789ff 0%, #7ddb69 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 14px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.stepContent {
+  flex: 1;
+}
+
+.stepTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 4px;
+}
+
+.stepDescription {
+  font-size: 14px;
+  color: #7f8c8d;
+  line-height: 1.4;
+}
+
+.stepStatus {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.stepStatus.pending {
+  background: #e1e8ed;
+  color: #7f8c8d;
+}
+
+.stepStatus.completed {
+  background: #27ae60;
+  color: white;
+}
+
+.stepStatus.current {
+  background: #5789ff;
+  color: white;
+}
+
+.analysisDetails {
+  margin-top: 20px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border: 1px solid #e1e8ed;
+}
+
+.detailsTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 12px;
+}
+
+.detailsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.analysisDetailItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e1e8ed;
+}
+
+.detailIcon {
+  width: 16px;
+  height: 16px;
+  color: #5789ff;
+}
+
+.analysisDetailText {
+  font-size: 14px;
+  color: #2c3e50;
+}
+
+.stepDetails {
+  margin-top: 12px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 8px;
+}
+
+.detailItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.detailItem:last-child {
+  margin-bottom: 0;
+}
+
+.detailBullet {
+  color: #5789ff;
+  font-weight: bold;
+  font-size: 12px;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.detailText {
+  font-size: 13px;
+  color: #5a6c7d;
+  line-height: 1.4;
+}
+
+@media (max-width: 768px) {
+  .processSteps {
+    gap: 12px;
+  }
+
+  .processStep {
+    padding: 12px;
+  }
+
+  .detailsGrid {
+    grid-template-columns: 1fr;
+  }
+}

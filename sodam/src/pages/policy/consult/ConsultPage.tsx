@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import { ArrowBack } from "@mui/icons-material";
 import styles from "./ConsultPage.module.css";
 
 interface SupportCenter {
@@ -401,7 +402,7 @@ const ConsultPage: React.FC = () => {
         <h2>조건에 맞는 지원센터</h2>
         <p>총 {matchedCenters.length}개의 지원센터가 매칭되었습니다</p>
         <button className={styles.backButton} onClick={() => setStep(1)}>
-          ← 조건 다시 설정하기
+          <ArrowBack /> 조건 다시 설정하기
         </button>
       </div>
 
@@ -467,7 +468,7 @@ const ConsultPage: React.FC = () => {
         <h2>{selectedCenter?.name} 전문가 목록</h2>
         <p>상담을 원하는 전문가를 선택해주세요</p>
         <button className={styles.backButton} onClick={() => setStep(2)}>
-          ← 지원센터 목록으로
+          <ArrowBack /> 지원센터 목록으로
         </button>
       </div>
 

@@ -4,11 +4,10 @@
 }
 
 .container {
-  min-height: 100vh;
+  flex: 1;
   background: #f8f9fa;
   color: #333;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  padding-top: 80px;
 }
 
 /* 헤더 섹션 */

@@ -1,0 +1,309 @@
+.executionStrategyPanel {
+  background: white;
+  border-radius: 20px;
+  padding: 32px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  margin-bottom: 24px;
+}
+
+.panelHeader {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.panelTitle {
+  font-size: 28px;
+  font-weight: 700;
+  color: #2c3e50;
+  margin: 0 0 8px 0;
+  font-family: "Apple SD Gothic Neo", -apple-system, BlinkMacSystemFont,
+    sans-serif;
+}
+
+.panelSubtitle {
+  font-size: 16px;
+  color: #7f8c8d;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.strategyTabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 32px;
+  background: #f8f9fa;
+  padding: 8px;
+  border-radius: 16px;
+}
+
+.tab {
+  flex: 1;
+  background: transparent;
+  border: none;
+  border-radius: 12px;
+  padding: 16px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #7f8c8d;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.tab:hover {
+  background: rgba(255, 255, 255, 0.8);
+  color: #2c3e50;
+}
+
+.tab.active {
+  background: white;
+  color: #2c3e50;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.strategyContent {
+  min-height: 400px;
+}
+
+.strategySection {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.sectionTitle {
+  font-size: 24px;
+  font-weight: 700;
+  color: #2c3e50;
+  margin: 0 0 8px 0;
+  font-family: "Apple SD Gothic Neo", -apple-system, BlinkMacSystemFont,
+    sans-serif;
+}
+
+.sectionDescription {
+  font-size: 16px;
+  color: #7f8c8d;
+  margin: 0 0 24px 0;
+  line-height: 1.5;
+}
+
+.strategyCards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 24px;
+}
+
+.strategyCard {
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 16px;
+  padding: 24px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.strategyCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  border-color: #2c3e50;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.cardTitle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.statusIcon {
+  font-size: 16px;
+}
+
+.cardTitle h4 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #2c3e50;
+  margin: 0;
+  font-family: "Apple SD Gothic Neo", -apple-system, BlinkMacSystemFont,
+    sans-serif;
+}
+
+.cardMeta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.priority {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.duration {
+  font-size: 12px;
+  color: #7f8c8d;
+  font-weight: 500;
+}
+
+.cardDescription {
+  font-size: 14px;
+  color: #5a6c7d;
+  line-height: 1.5;
+  margin: 0 0 16px 0;
+}
+
+.cardDetails {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 12px;
+}
+
+.detailItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.detailLabel {
+  font-size: 12px;
+  color: #7f8c8d;
+  font-weight: 500;
+}
+
+.detailValue {
+  font-size: 14px;
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+.taskList {
+  margin-bottom: 20px;
+}
+
+.taskList h5 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0 0 12px 0;
+}
+
+.taskList ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.taskList li {
+  font-size: 13px;
+  color: #5a6c7d;
+  line-height: 1.4;
+  margin-bottom: 6px;
+  padding-left: 16px;
+  position: relative;
+}
+
+.taskList li::before {
+  content: "•";
+  color: #2c3e50;
+  font-weight: bold;
+  position: absolute;
+  left: 0;
+}
+
+.executeButton {
+  width: 100%;
+  background: #2c3e50;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.executeButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(44, 62, 80, 0.4);
+}
+
+.executeButton:active {
+  transform: translateY(0);
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .executionStrategyPanel {
+    padding: 20px;
+    margin: 16px;
+  }
+
+  .panelTitle {
+    font-size: 24px;
+  }
+
+  .strategyTabs {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .tab {
+    padding: 12px 16px;
+    font-size: 13px;
+  }
+
+  .strategyCards {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .strategyCard {
+    padding: 20px;
+  }
+
+  .cardHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .cardMeta {
+    align-items: flex-start;
+    flex-direction: row;
+    gap: 12px;
+  }
+
+  .cardDetails {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+}

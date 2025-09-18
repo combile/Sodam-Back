@@ -5,6 +5,7 @@
   border-top: 1px solid #eee;
   display: flex;
   justify-content: center;
+  margin-top: auto; /* 푸터를 화면 아래로 밀어내기 */
 }
 
 .inner {

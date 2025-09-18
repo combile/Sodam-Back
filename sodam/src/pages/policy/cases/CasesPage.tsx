@@ -339,15 +339,6 @@ const CasesPage: React.FC = () => {
     },
   ];
 
-  const marketTypes = [
-    "대학가 상권",
-    "전통시장 상권",
-    "신도시 상권",
-    "골목상권",
-    "공단 상권",
-    "상가밀집지역",
-  ];
-
   const filteredCases = similarMarketCases.filter((similarMarketCase) => {
     const matchesSearch =
       similarMarketCase.title

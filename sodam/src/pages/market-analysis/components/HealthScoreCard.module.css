@@ -1,0 +1,265 @@
+/* HealthScoreCard.module.css */
+.healthScoreCard {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-bottom: 24px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.scoreContainer {
+  text-align: center;
+}
+
+.score {
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.scoreLabel {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #666;
+}
+
+.description {
+  font-size: 1rem;
+  color: #4a4a4a;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.indicators {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.indicator {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.indicatorLabel {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #666;
+  min-width: 80px;
+}
+
+.indicatorValue {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  min-width: 40px;
+  text-align: right;
+}
+
+.indicatorBar {
+  flex: 1;
+  height: 8px;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.indicatorFill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.summary {
+  border-top: 1px solid #e0e0e0;
+  padding-top: 16px;
+}
+
+.summaryItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.summaryLabel {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.summaryValue {
+  font-size: 0.875rem;
+  color: #4a4a4a;
+}
+
+/* 개선 권장사항 */
+.recommendations {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.recommendationsTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 16px 0;
+}
+
+.recommendationsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.recommendationItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 3px solid #007bff;
+}
+
+.recommendationIcon {
+  font-size: 1rem;
+  margin-top: 0.125rem;
+}
+
+.recommendationText {
+  font-size: 0.875rem;
+  color: #4a4a4a;
+  line-height: 1.4;
+}
+
+.recommendationText strong {
+  color: #1a1a1a;
+  font-weight: 600;
+}
+
+/* 상세 분석 인사이트 */
+.insights {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.insightsTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 16px 0;
+}
+
+.insightsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.insightCard {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 12px;
+  border-left: 3px solid #28a745;
+}
+
+.insightHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.insightIcon {
+  font-size: 1rem;
+}
+
+.insightLabel {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.insightValue {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #007bff;
+  margin-bottom: 4px;
+}
+
+.insightDescription {
+  font-size: 0.75rem;
+  color: #6c757d;
+  line-height: 1.3;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .healthScoreCard {
+    padding: 16px;
+  }
+
+  .header {
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+  }
+
+  .score {
+    font-size: 2.5rem;
+  }
+
+  .indicators {
+    gap: 12px;
+  }
+
+  .indicator {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .indicatorLabel {
+    min-width: auto;
+  }
+
+  .indicatorValue {
+    min-width: auto;
+    text-align: left;
+  }
+
+  .indicatorBar {
+    width: 100%;
+  }
+
+  .insightsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .recommendationItem {
+    padding: 8px;
+  }
+
+  .insightCard {
+    padding: 8px;
+  }
+}

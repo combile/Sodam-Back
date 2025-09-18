@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Icon } from "@iconify/react";
+import { ArrowForward } from "@mui/icons-material";
 import styles from "./sodam.module.css";
 
 const SodamIntro: React.FC = () => {
@@ -327,7 +328,7 @@ const SodamIntro: React.FC = () => {
               <h3>Backend Developer 1</h3>
               <p>API 및 데이터베이스 설계</p>
               <div className={styles.memberSkills}>
-                <span>Node.js</span>
+                <span>Flask</span>
                 <span>Database</span>
                 <span>API</span>
               </div>
@@ -422,7 +423,13 @@ const SodamIntro: React.FC = () => {
                   <Icon icon="mdi:refresh" />
                 </div>
                 <h3>3단계 간편한 프로세스</h3>
-                <p>분석→전략→실행</p>
+                <p>
+                  분석
+                  <ArrowForward />
+                  전략
+                  <ArrowForward />
+                  실행
+                </p>
               </div>
 
               <div className={styles.effectCard}>

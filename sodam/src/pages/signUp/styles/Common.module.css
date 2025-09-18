@@ -69,7 +69,7 @@
 .card {
   padding: 12px;
   width: 386px;
-  height: 380px;
+  min-height: 380px;
   max-width: 400px;
   border-radius: 30px;
   background: #fff;
@@ -243,6 +243,38 @@
   100% {
     transform: translateY(0) rotate(360deg) scale(1);
     opacity: 0.4;
+  }
+}
+
+/* 반응형 디자인 */
+@media (max-width: 480px) {
+  .card {
+    width: 90%;
+    max-width: 350px;
+    min-height: 400px;
+    padding: 16px;
+  }
+
+  .nextButton {
+    padding: 12px 100px;
+    font-size: 14px;
+  }
+
+  .title {
+    font-size: 28px;
+  }
+}
+
+@media (max-width: 360px) {
+  .card {
+    width: 95%;
+    max-width: 320px;
+    min-height: 420px;
+  }
+
+  .nextButton {
+    padding: 10px 80px;
+    font-size: 13px;
   }
 }
 

@@ -1,0 +1,550 @@
+/* BusinessInsightsPanel.module.css */
+.insightsPanel {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.panelHeader {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 2rem;
+  text-align: center;
+}
+
+.panelTitle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+}
+
+.panelSubtitle {
+  font-size: 1rem;
+  margin: 0;
+  opacity: 0.9;
+}
+
+.insightsTabs {
+  display: flex;
+  background: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  border: none;
+  background: transparent;
+  color: #6c757d;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-bottom: 3px solid transparent;
+}
+
+.tab:hover {
+  background: #e9ecef;
+  color: #495057;
+}
+
+.tab.active {
+  background: white;
+  color: #007bff;
+  border-bottom-color: #007bff;
+}
+
+.insightsContent {
+  padding: 2rem;
+}
+
+/* 개요 섹션 */
+.overviewSection {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.overviewCards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.overviewCard {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border-left: 4px solid #007bff;
+}
+
+.cardIcon {
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.cardContent h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0 0 0.5rem 0;
+}
+
+.cardContent p {
+  font-size: 0.95rem;
+  color: #6c757d;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.executiveSummary {
+  background: #e3f2fd;
+  border-radius: 12px;
+  padding: 1.5rem;
+  border-left: 4px solid #2196f3;
+}
+
+.executiveSummary h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0 0 1rem 0;
+}
+
+.summaryContent p {
+  font-size: 1rem;
+  color: #495057;
+  margin: 0 0 1rem 0;
+  line-height: 1.6;
+}
+
+.summaryContent p:last-child {
+  margin-bottom: 0;
+}
+
+.summaryContent strong {
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+/* 권장사항 섹션 */
+.recommendationsSection h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin: 0 0 1.5rem 0;
+}
+
+.recommendationsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 1.5rem;
+}
+
+.recommendationCard {
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.recommendationCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.recommendationHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.recommendationHeader h4 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0;
+  flex: 1;
+}
+
+.recommendationMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: flex-end;
+}
+
+.priority {
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.priority.높음 {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.priority.중간 {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.priority.낮음 {
+  background: #d4edda;
+  color: #155724;
+}
+
+.timeline {
+  font-size: 0.875rem;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+.recommendationDescription {
+  font-size: 1rem;
+  color: #495057;
+  margin: 0 0 1rem 0;
+  line-height: 1.5;
+}
+
+.actionsList h5 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0 0 0.5rem 0;
+}
+
+.actionsList ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.actionsList li {
+  padding: 0.5rem 0;
+  font-size: 0.9rem;
+  color: #495057;
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+.actionsList li::before {
+  content: "•";
+  color: #007bff;
+  font-weight: bold;
+  position: absolute;
+  left: 0;
+}
+
+.investmentInfo {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e9ecef;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.investmentLabel {
+  font-size: 0.875rem;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+.investmentValue {
+  font-size: 0.875rem;
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+/* 기회 섹션 */
+.opportunitiesSection h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin: 0 0 1.5rem 0;
+}
+
+.opportunitiesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 1.5rem;
+}
+
+.opportunityCard {
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.opportunityCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.opportunityHeader {
+  margin-bottom: 1rem;
+}
+
+.opportunityCategory {
+  font-size: 0.75rem;
+  color: #007bff;
+  background: #e3f2fd;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  display: inline-block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.opportunityHeader h4 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0;
+}
+
+.opportunityDescription {
+  font-size: 1rem;
+  color: #495057;
+  margin: 0 0 1rem 0;
+  line-height: 1.5;
+}
+
+.opportunityMetrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.metric {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  background: #f8f9fa;
+  border-radius: 6px;
+}
+
+.metricLabel {
+  font-size: 0.875rem;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+.metricValue {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.metricValue.높음 {
+  color: #dc3545;
+}
+
+.metricValue.중간 {
+  color: #ffc107;
+}
+
+.metricValue.낮음 {
+  color: #28a745;
+}
+
+.metricValue.roi {
+  color: #007bff;
+}
+
+/* 리스크 섹션 */
+.risksSection h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin: 0 0 1.5rem 0;
+}
+
+.risksGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 1.5rem;
+}
+
+.riskCard {
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.riskCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.riskHeader {
+  margin-bottom: 1rem;
+}
+
+.riskHeader h4 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0 0 1rem 0;
+}
+
+.riskMatrix {
+  display: flex;
+  gap: 1rem;
+}
+
+.riskProbability,
+.riskImpact {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  background: #f8f9fa;
+  border-radius: 6px;
+}
+
+.riskLabel {
+  font-size: 0.875rem;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+.riskValue {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.riskValue.높음 {
+  color: #dc3545;
+}
+
+.riskValue.중간 {
+  color: #ffc107;
+}
+
+.riskValue.낮음 {
+  color: #28a745;
+}
+
+.mitigationStrategies {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e9ecef;
+}
+
+.mitigationStrategies h5 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0 0 0.5rem 0;
+}
+
+.mitigationStrategies ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.mitigationStrategies li {
+  padding: 0.5rem 0;
+  font-size: 0.9rem;
+  color: #495057;
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+.mitigationStrategies li::before {
+  content: "•";
+  color: #dc3545;
+  font-weight: bold;
+  position: absolute;
+  left: 0;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .insightsTabs {
+    flex-direction: column;
+  }
+
+  .tab {
+    border-bottom: 1px solid #e9ecef;
+    border-right: none;
+  }
+
+  .tab.active {
+    border-bottom-color: #007bff;
+    border-right: none;
+  }
+
+  .insightsContent {
+    padding: 1rem;
+  }
+
+  .overviewCards {
+    grid-template-columns: 1fr;
+  }
+
+  .recommendationsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .opportunitiesGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .risksGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .opportunityMetrics {
+    grid-template-columns: 1fr;
+  }
+
+  .riskMatrix {
+    flex-direction: column;
+  }
+
+  .recommendationHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .recommendationMeta {
+    align-items: flex-start;
+  }
+}

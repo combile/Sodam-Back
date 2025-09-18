@@ -8,6 +8,7 @@ import menuIcon from "../assets/icon-menu.svg";
 import searchIcon from "../assets/icon-search.svg";
 import appleIcon from "../assets/icon-apple.svg";
 import userIcon from "../assets/icon-user.svg";
+import defaultProfileImage from "../assets/default-profile.png";
 
 import closeIcon from "../assets/icon-close.svg";
 
@@ -176,13 +177,21 @@ const Header = () => {
 
           {isLoggedIn ? (
             <div className={styles.userSection}>
-              <span className={styles.userName}>{user?.name || "사용자"}</span>
+              <Link to="/mypage" className={styles.userNameLink}>
+                <span className={styles.userName}>
+                  {user?.nickname || user?.name || "사용자"}
+                </span>
+              </Link>
               <button
                 className={styles.menuBtn}
                 aria-label="메뉴 열기"
                 onClick={() => setIsMenuOpen(true)}
               >
-                <img src={userIcon} alt="사용자" className={styles.menuIcon} />
+                <img
+                  src={user?.profileImage || defaultProfileImage}
+                  alt="프로필"
+                  className={styles.profileImage}
+                />
               </button>
             </div>
           ) : (
@@ -226,19 +235,33 @@ const Header = () => {
             <div className={styles.menuTop}>
               {isLoggedIn ? (
                 <div className={styles.userInfo}>
-                  <div className={styles.userProfile}>
-                    <img
-                      src={userIcon}
-                      alt="사용자"
-                      className={styles.profileIcon}
-                    />
-                    <div className={styles.userDetails}>
-                      <h3 className={styles.userName}>
-                        {user?.name || "사용자"}
-                      </h3>
-                      <p className={styles.userEmail}>{user?.email}</p>
+                  <Link
+                    to="/mypage"
+                    className={styles.userProfileLink}
+                    onClick={handleMenuClose}
+                  >
+                    <div className={styles.userProfile}>
+                      {user?.profileImage ? (
+                        <img
+                          src={user.profileImage}
+                          alt="프로필"
+                          className={styles.profileIcon}
+                        />
+                      ) : (
+                        <img
+                          src={userIcon}
+                          alt="사용자"
+                          className={styles.profileIcon}
+                        />
+                      )}
+                      <div className={styles.userDetails}>
+                        <h3 className={styles.userName}>
+                          {user?.nickname || user?.name || "사용자"}
+                        </h3>
+                        <p className={styles.userEmail}>{user?.email}</p>
+                      </div>
                     </div>
-                  </div>
+                  </Link>
                   <button className={styles.logoutBtn} onClick={handleLogout}>
                     로그아웃
                   </button>
@@ -260,17 +283,7 @@ const Header = () => {
                 <ul>
                   <li>
                     <Link to="/market-analysis" onClick={handleMenuClose}>
-                      상권 진단
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="/market-analysis" onClick={handleMenuClose}>
-                      리스크 유형 분석
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="/market-analysis" onClick={handleMenuClose}>
-                      상권 건강 점수
+                      상권 종합 분석
                     </Link>
                   </li>
                 </ul>
@@ -278,22 +291,18 @@ const Header = () => {
 
               <section className={styles.menuCard}>
                 <header className={styles.cardHeader}>
-                  <h3>전략 제안</h3>
+                  <h3>사장님 !</h3>
                 </header>
                 <ul>
                   <li>
-                    <Link to="/strategy/industry" onClick={handleMenuClose}>
-                      맞춤형 업종 전략
+                    {" "}
+                    <Link to="/today-ceo" onClick={handleMenuClose}>
+                      오늘도 사장
                     </Link>
                   </li>
                   <li>
-                    <Link to="/strategy/ops" onClick={handleMenuClose}>
-                      운영 전략
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="/strategy/marketing" onClick={handleMenuClose}>
-                      마케팅 전략
+                    <Link to="/tomorrow-ceo" onClick={handleMenuClose}>
+                      내일은 사장
                     </Link>
                   </li>
                 </ul>
@@ -301,22 +310,22 @@ const Header = () => {
 
               <section className={styles.menuCard}>
                 <header className={styles.cardHeader}>
-                  <h3>정책 지원</h3>
+                  <h3>지원 도구</h3>
                 </header>
                 <ul>
                   <li>
                     <Link to="/policy/list" onClick={handleMenuClose}>
-                      창업 지원 정책 모아보기
+                      정책 지원
                     </Link>
                   </li>
                   <li>
                     <Link to="/policy/consult" onClick={handleMenuClose}>
-                      전문가 상담 예약
+                      전문가 상담
                     </Link>
                   </li>
                   <li>
                     <Link to="/policy/cases" onClick={handleMenuClose}>
-                      유사 상권 성공 사례
+                      성공 사례
                     </Link>
                   </li>
                 </ul>

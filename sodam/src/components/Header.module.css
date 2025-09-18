@@ -103,6 +103,14 @@
   height: 20px;
 }
 
+.profileImage {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #e9ecef;
+}
+
 .right {
   display: flex;
   align-items: center;
@@ -415,6 +423,16 @@
   gap: 8px;
 }
 
+.userNameLink {
+  text-decoration: none;
+  color: inherit;
+  transition: opacity 0.2s ease;
+}
+
+.userNameLink:hover {
+  opacity: 0.8;
+}
+
 .userName {
   font-size: 14px;
   font-weight: 500;
@@ -431,12 +449,24 @@
   width: 100%;
 }
 
+.userProfileLink {
+  text-decoration: none;
+  color: inherit;
+  flex: 1;
+  transition: opacity 0.2s ease;
+}
+
+.userProfileLink:hover {
+  opacity: 0.8;
+}
+
 .userProfile {
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 16px;
   border-radius: 12px;
+  cursor: pointer;
 }
 
 .profileIcon {
@@ -445,6 +475,7 @@
   border-radius: 50%;
   background-color: #e9ecef;
   padding: 8px;
+  object-fit: cover;
 }
 
 .userDetails {

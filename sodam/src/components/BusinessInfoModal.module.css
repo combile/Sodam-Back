@@ -1,0 +1,275 @@
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modalContent {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  max-width: 600px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 24px 24px 16px 24px;
+  border-bottom: 1px solid #e1e5e9;
+}
+
+.businessTitle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.industryIcon {
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background-color: #f8f9fa;
+  border-radius: 50%;
+  border: 2px solid #e9ecef;
+}
+
+.businessName {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  color: #2c3e50;
+  line-height: 1.2;
+}
+
+.branchName {
+  color: #6c757d;
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #6c757d;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.closeButton:hover {
+  background-color: #f8f9fa;
+  color: #495057;
+}
+
+.modalBody {
+  padding: 24px;
+}
+
+.infoSection {
+  margin-bottom: 24px;
+}
+
+.infoSection:last-child {
+  margin-bottom: 0;
+}
+
+.sectionTitle {
+  margin: 0 0 16px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #2c3e50;
+  border-bottom: 2px solid #e9ecef;
+  padding-bottom: 8px;
+}
+
+.industryInfo {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.industryBadge {
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.industryDetail {
+  flex: 1;
+}
+
+.industryCategory {
+  margin: 0 0 4px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #495057;
+}
+
+.industrySubCategory {
+  margin: 0;
+  font-size: 14px;
+  color: #6c757d;
+}
+
+.locationInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.locationItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.locationLabel {
+  min-width: 80px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #6c757d;
+  white-space: nowrap;
+}
+
+.locationValue {
+  flex: 1;
+  font-size: 14px;
+  color: #495057;
+  line-height: 1.4;
+}
+
+.detailInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.detailItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.detailLabel {
+  min-width: 120px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #6c757d;
+  white-space: nowrap;
+}
+
+.detailValue {
+  flex: 1;
+  font-size: 14px;
+  color: #495057;
+  word-break: break-all;
+}
+
+.modalFooter {
+  padding: 16px 24px 24px 24px;
+  border-top: 1px solid #e1e5e9;
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.mapButton,
+.copyButton {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mapButton {
+  background-color: #007bff;
+  color: white;
+}
+
+.mapButton:hover {
+  background-color: #0056b3;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+}
+
+.copyButton {
+  background-color: #6c757d;
+  color: white;
+}
+
+.copyButton:hover {
+  background-color: #545b62;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(108, 117, 125, 0.3);
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .modalContent {
+    margin: 10px;
+    max-height: 90vh;
+  }
+
+  .modalHeader {
+    padding: 20px 20px 16px 20px;
+  }
+
+  .businessName {
+    font-size: 20px;
+  }
+
+  .modalBody {
+    padding: 20px;
+  }
+
+  .modalFooter {
+    padding: 16px 20px 20px 20px;
+    flex-direction: column;
+  }
+
+  .mapButton,
+  .copyButton {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .locationItem,
+  .detailItem {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .locationLabel,
+  .detailLabel {
+    min-width: auto;
+  }
+}

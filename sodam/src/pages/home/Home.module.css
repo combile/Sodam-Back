@@ -11,8 +11,7 @@ body {
 .container {
   padding: 0;
   max-width: none;
-  padding-top: 80px;
-  min-height: 100vh;
+  flex: 1; /* 메인 컨테이너가 남은 공간을 차지 */
 }
 
 /* 스크롤 애니메이션 키프레임 */
@@ -105,6 +104,29 @@ body {
   }
   to {
     width: 80%;
+  }
+}
+
+@keyframes barGrow {
+  from {
+    height: 0;
+    opacity: 0;
+    transform: scaleY(0);
+  }
+  to {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+}
+
+@keyframes fadeInValue {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
   }
 }
 
@@ -471,7 +493,7 @@ body {
   flex: 1;
   background: rgba(255, 255, 255, 0.95);
   border-radius: 16px;
-  padding: 25px 20px 120px 20px;
+  padding: 25px 20px 20px 20px;
   margin: 0;
   z-index: 0;
   color: #333;
@@ -559,18 +581,24 @@ body {
 }
 
 .progressFill {
-  width: 75%;
+  /* width는 JavaScript에서 동적으로 설정 */
   height: 100%;
-  background: linear-gradient(90deg, #4caf50, #7acc49);
-  animation: expandWidth 2s ease-out;
+  background: linear-gradient(90deg, #4caf50, #7acc49); /* 기본값 */
+  width: 0%; /* 초기값 0%에서 시작 */
+  transition: width 1.5s ease-out, background-color 0.3s ease;
+}
+
+.populationChartContainer {
+  margin-top: 15px;
 }
 
 .populationChart {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  height: 80px;
-  margin-top: 15px;
+  height: 120px;
+  padding: 10px 0;
+  position: relative;
 }
 
 .barGroup {
@@ -579,6 +607,16 @@ body {
   align-items: center;
   flex: 1;
   animation: fadeInUp 0.8s ease-out;
+  position: relative;
+}
+
+.barContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100px;
+  position: relative;
 }
 
 .barGroup:nth-child(1) {
@@ -598,21 +636,74 @@ body {
 }
 
 .bar {
-  width: 12px;
+  width: 20px;
   background: linear-gradient(180deg, #4caf50 0%, #7acc49 100%);
-  border-radius: 2px;
+  border-radius: 4px 4px 0 0;
   margin-bottom: 8px;
   transform-origin: bottom;
-  animation: scaleIn 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: barGrow 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+  transition: all 0.3s ease;
+  min-height: 4px;
+}
+
+.bar:hover {
+  transform: scaleY(1.05);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+}
+
+.barValue {
+  position: absolute;
+  top: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  animation: fadeInValue 0.5s ease-out 0.8s forwards;
 }
 
 .barLabel {
   color: #666;
-  font-size: 9px;
+  font-size: 11px;
   text-align: center;
-  transform: rotate(-45deg);
-  transform-origin: center;
+  font-weight: 500;
+  margin-top: 8px;
   white-space: nowrap;
+}
+
+.chartLegend {
+  display: flex;
+  justify-content: center;
+  margin-top: 15px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legendColor {
+  width: 12px;
+  height: 12px;
+  background: linear-gradient(180deg, #4caf50 0%, #7acc49 100%);
+  border-radius: 2px;
+}
+
+.legendItem span {
+  color: #666;
+  font-size: 11px;
+  font-weight: 500;
 }
 
 .businessCount {
@@ -929,29 +1020,7 @@ body {
   transform-origin: bottom;
   position: relative;
   overflow: hidden;
-}
-
-.bar::before {
-  content: "";
-  position: absolute;
-  top: -100%;
-  left: 0;
-  right: 0;
-  height: 100%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.4), transparent);
-  animation: barShine 2s ease-in-out infinite;
-}
-
-@keyframes barShine {
-  0% {
-    top: -100%;
-  }
-  50% {
-    top: 100%;
-  }
-  100% {
-    top: -100%;
-  }
+  min-height: 4px;
 }
 
 /* 필터 스타일 */
@@ -1114,4 +1183,31 @@ body {
   .bottomContent h3 {
     font-size: 48px;
   }
+}
+
+/* 로딩 및 에러 스타일 */
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+}
+
+.error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  color: #ff6b6b;
+  font-size: 14px;
+}
+
+.growthRate {
+  text-align: center;
+  margin-top: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
 }

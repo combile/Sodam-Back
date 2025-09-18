@@ -1,12 +1,10 @@
 /* 기존 스타일들 */
 .signupWrapper {
   position: relative;
-  min-height: 50vh;
-  background-color: #fff;
+  background-color: #d79696;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 80px; /* 헤더 높이에 맞게 조정 */
   font-family: "Noto Sans KR", sans-serif;
 }
 
@@ -217,7 +215,7 @@
 /* 스텝 컨테이너 애니메이션 */
 .stepContainer {
   width: 100%;
-  min-height: 100vh;
+  flex: 1;
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 

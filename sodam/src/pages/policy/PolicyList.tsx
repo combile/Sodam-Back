@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Close, ArrowForward } from "@mui/icons-material";
 import styles from "./PolicyList.module.css";
 
 interface Policy {
@@ -392,7 +393,7 @@ const PolicyList: React.FC = () => {
             onClick={(e) => e.stopPropagation()}
           >
             <button onClick={closeModal} className={styles.modalCloseButton}>
-              ✕
+              <Close fontSize="small" />
             </button>
 
             <h2>{selectedPolicy.title}</h2>
@@ -474,7 +475,7 @@ const PolicyList: React.FC = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    신청 페이지로 이동 →
+                    신청 페이지로 이동 <ArrowForward />
                   </a>
                 </span>
               </div>
