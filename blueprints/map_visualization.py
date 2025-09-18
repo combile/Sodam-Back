@@ -397,3 +397,5 @@ def get_supported_regions():
                 "message": str(e)
             }
         }), 500
+
+

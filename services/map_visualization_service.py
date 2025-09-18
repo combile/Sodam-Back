@@ -919,3 +919,5 @@ class MapVisualizationService:
             "decline": ["신규 고객 유치 전략이 필요합니다.", "사업 모델 혁신을 고려하세요."],
             "emerging": ["초기 투자와 마케팅에 집중하세요.", "고객 피드백을 적극 수집하세요."]
         }
+
+

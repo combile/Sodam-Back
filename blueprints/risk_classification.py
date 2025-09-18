@@ -291,3 +291,5 @@ def get_mitigation_strategies():
                 "message": str(e)
             }
         }), 500
+
+

@@ -313,3 +313,5 @@ def get_difficulty_levels():
                 "message": str(e)
             }
         }), 500
+
+

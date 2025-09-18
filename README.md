@@ -215,3 +215,5 @@ docker run -p 5000:5000 sodam-backend
 - **개발팀**: SODAM Development Team
 - **이메일**: support@sodam.kr
 - **문서**: `DETAILED_SWAGGER_GUIDE.md` 참조
+
+

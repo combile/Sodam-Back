@@ -1,6 +1,7 @@
 from flask import Flask, request
 from datetime import datetime
 from flask_restx import Api, Resource, fields
+import json
 from config import Config
 from extensions import db, migrate, bcrypt, jwt, cors
 from models import User
@@ -15,10 +16,23 @@ from blueprints.risk_classification import risk_classification_bp
 from blueprints.strategy_cards import strategy_cards_bp
 from blueprints.support_tools import support_tools_bp
 from blueprints.map_visualization import map_visualization_bp
+from blueprints.business_info import business_info_bp
+from blueprints.profile import profile_bp, profile_ns
+from blueprints.community import community_bp
+
+class CustomJSONEncoder(json.JSONEncoder):
+    """커스텀 JSON 인코더 - bytes 객체를 문자열로 변환"""
+    def default(self, obj):
+        if isinstance(obj, bytes):
+            return obj.decode('utf-8')
+        return super().default(obj)
 
 def create_app(config_object: type = Config) -> Flask:
     app = Flask(__name__)
     app.config.from_object(config_object)
+    
+    # 커스텀 JSON 인코더 설정
+    app.json_encoder = CustomJSONEncoder
 
     # Extensions 초기화
     db.init_app(app)
@@ -79,24 +93,64 @@ def create_app(config_object: type = Config) -> Flask:
         license_url='https://opensource.org/licenses/MIT'
     )
     
+    # Flask-RESTX JSON representation을 커스텀 인코더로 교체
+    def custom_json_output(data, code, headers=None):
+        """커스텀 JSON 출력 함수 - bytes 객체 처리"""
+        from flask import make_response, current_app
+        
+        settings = current_app.config.get('RESTX_JSON', {})
+        if current_app.debug:
+            settings.setdefault('indent', 4)
+        
+        # bytes 객체를 문자열로 변환하는 재귀 함수
+        def convert_bytes(obj):
+            if isinstance(obj, bytes):
+                return obj.decode('utf-8')
+            elif isinstance(obj, dict):
+                return {key: convert_bytes(value) for key, value in obj.items()}
+            elif isinstance(obj, list):
+                return [convert_bytes(item) for item in obj]
+            else:
+                return obj
+        
+        # 데이터 변환
+        converted_data = convert_bytes(data)
+        
+        # JSON 직렬화
+        dumped = json.dumps(converted_data, cls=CustomJSONEncoder, **settings) + "\n"
+        
+        resp = make_response(dumped, code)
+        resp.headers.extend(headers or {})
+        return resp
+    
+    # 기존 JSON representation을 커스텀 함수로 교체
+    api.representations['application/json'] = custom_json_output
+    
     # CORS 설정
     cors.init_app(app, resources={
         r"/*": {
-            "origins": "*",
-            "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-            "allow_headers": ["Content-Type", "Authorization", "X-Requested-With"],
-            "supports_credentials": True
+            "origins": [
+                "http://localhost:3000", 
+                "http://127.0.0.1:3000",
+                "http://localhost:5001",
+                "http://127.0.0.1:5001"
+            ],
+            "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+            "allow_headers": [
+                "Content-Type", 
+                "Authorization", 
+                "X-Requested-With",
+                "Accept",
+                "Origin",
+                "Access-Control-Request-Method",
+                "Access-Control-Request-Headers"
+            ],
+            "supports_credentials": True,
+            "expose_headers": ["Content-Range", "X-Content-Range"],
+            "send_wildcard": False,
+            "vary_header": True
         }
     })
-    
-    # CORS 헤더를 모든 응답에 추가
-    @app.after_request
-    def after_request(response):
-        response.headers.add('Access-Control-Allow-Origin', '*')
-        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,X-Requested-With')
-        response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
-        response.headers.add('Access-Control-Allow-Credentials', 'true')
-        return response
 
     # 기본 엔드포인트들 (Flask-RESTX와 충돌 방지)
     @app.route('/health')
@@ -443,102 +497,6 @@ def create_app(config_object: type = Config) -> Flask:
     
     # 실제 블루프린트 엔드포인트들을 Swagger에 등록
     
-    # 인증 API
-    @ns.route('/auth/login')
-    class AuthLogin(Resource):
-        @ns.doc('auth_login')
-        def post(self):
-            """사용자 로그인"""
-            data = request.get_json()
-            
-            if not data:
-                return {'message': 'No data provided'}, 400
-                
-            username = data.get('username')
-            password = data.get('password')
-            
-            if not all([username, password]):
-                return {'message': 'Missing username or password'}, 400
-                
-            try:
-                # 사용자 찾기
-                user = User.query.filter_by(username=username).first()
-                if not user or not bcrypt.check_password_hash(user.password_hash, password):
-                    return {'message': 'Invalid username or password'}, 401
-                
-                # JWT 토큰 생성 (간단한 더미 토큰)
-                from flask_jwt_extended import create_access_token
-                token = create_access_token(identity=user.id)
-                
-                return {
-                    'message': 'Login successful',
-                    'access_token': token,
-                    'user': {
-                        'id': user.id,
-                        'username': user.username,
-                        'email': user.email,
-                        'name': user.name
-                    }
-                }, 200
-                
-            except Exception as e:
-                return {'message': str(e)}, 500
-    
-    @ns.route('/auth/register')
-    class AuthRegister(Resource):
-        @ns.doc('auth_register')
-        def post(self):
-            """사용자 회원가입"""
-            data = request.get_json()
-            
-            if not data:
-                return {'message': 'No data provided'}, 400
-                
-            username = data.get('username')
-            email = data.get('email')
-            password = data.get('password')
-            name = data.get('name')
-            
-            if not all([username, email, password, name]):
-                return {'message': 'Missing required fields'}, 400
-                
-            try:
-                # 아이디 중복 검사
-                if User.query.filter_by(username=username).first():
-                    return {'message': 'Username already exists'}, 409
-                
-                # 이메일 중복 검사
-                if User.query.filter_by(email=email).first():
-                    return {'message': 'Email already exists'}, 409
-                
-                # 비밀번호 해싱
-                pw_hash = bcrypt.generate_password_hash(password).decode()
-                
-                # 사용자 생성
-                user = User(
-                    username=username,
-                    email=email,
-                    name=name,
-                    password_hash=pw_hash
-                )
-                
-                # 데이터베이스에 저장
-                db.session.add(user)
-                db.session.commit()
-                
-                return {
-                    'message': 'User registered successfully',
-                    'user': {
-                        'id': user.id,
-                        'username': user.username,
-                        'email': user.email,
-                        'name': user.name
-                    }
-                }, 201
-                
-            except Exception as e:
-                db.session.rollback()
-                return {'message': str(e)}, 500
     
     # 상권 진단 API
     @ns.route('/market-diagnosis/markets')
@@ -546,40 +504,18 @@ def create_app(config_object: type = Config) -> Flask:
         @ns.doc('market_diagnosis_markets')
         def get(self):
             """상권 목록 조회"""
-            try:
-                # 실제 상권 목록 조회 로직 구현
-                # TODO: 데이터베이스에서 상권 목록 조회
-                
-                return {
-                    'markets': [
-                        {'code': 'GANGNAM', 'name': '강남구', 'region': '서울'},
-                        {'code': 'HONGDAE', 'name': '홍대', 'region': '서울'},
-                        {'code': 'MYEONGDONG', 'name': '명동', 'region': '서울'}
-                    ]
-                }, 200
-                
-            except Exception as e:
-                return {'message': str(e)}, 500
+            with app.test_client() as client:
+                response = client.get('/api/v1/market-diagnosis/markets')
+                return response.get_json(), response.status_code
     
     @ns.route('/market-diagnosis/markets/<string:market_code>')
     class MarketDiagnosisMarketDetail(Resource):
         @ns.doc('market_diagnosis_market_detail')
         def get(self, market_code):
             """상권 상세 정보"""
-            try:
-                # 실제 상권 상세 정보 조회 로직 구현
-                # TODO: 데이터베이스에서 상권 상세 정보 조회
-                
-                return {
-                    'market_code': market_code,
-                    'name': f'{market_code} 상권',
-                    'region': '서울',
-                    'description': '상권 상세 정보',
-                    'coordinates': {'lat': 37.5665, 'lng': 126.9780}
-                }, 200
-                
-            except Exception as e:
-                return {'message': str(e)}, 500
+            with app.test_client() as client:
+                response = client.get(f'/api/v1/market-diagnosis/markets/{market_code}')
+                return response.get_json(), response.status_code
     
     # 핵심 진단 API
     @ns.route('/core-diagnosis/foot-traffic/<string:market_code>')
@@ -587,261 +523,109 @@ def create_app(config_object: type = Config) -> Flask:
         @ns.doc('core_diagnosis_foot_traffic')
         def get(self, market_code):
             """유동인구 변화량 분석"""
-            try:
-                # 실제 유동인구 분석 로직 구현
-                # TODO: 데이터베이스에서 유동인구 데이터 조회 및 분석
-                
-                return {
-                    'market_code': market_code,
-                    'foot_traffic_change': 15.5,
-                    'trend': 'increasing',
-                    'period': '2024-09',
-                    'data': {
-                        'current': 1250,
-                        'previous': 1080,
-                        'change_rate': 15.5
-                    }
-                }, 200
-                
-            except Exception as e:
-                return {'message': str(e)}, 500
+            with app.test_client() as client:
+                response = client.get(f'/api/v1/core-diagnosis/foot-traffic/{market_code}')
+                return response.get_json(), response.status_code
     
     @ns.route('/core-diagnosis/card-sales/<string:market_code>')
     class CoreDiagnosisCardSales(Resource):
         @ns.doc('core_diagnosis_card_sales')
         def get(self, market_code):
             """카드매출 추이 분석"""
-            try:
-                # 실제 카드매출 분석 로직 구현
-                # TODO: 데이터베이스에서 카드매출 데이터 조회 및 분석
-                
-                return {
-                    'market_code': market_code,
-                    'sales_trend': 8.2,
-                    'growth_rate': 12.5,
-                    'period': '2024-09',
-                    'data': {
-                        'current_month': 2500000,
-                        'previous_month': 2300000,
-                        'growth_rate': 8.2
-                    }
-                }, 200
-                
-            except Exception as e:
-                return {'message': str(e)}, 500
+            with app.test_client() as client:
+                response = client.get(f'/api/v1/core-diagnosis/card-sales/{market_code}')
+                return response.get_json(), response.status_code
     
     @ns.route('/core-diagnosis/same-industry/<string:market_code>')
     class CoreDiagnosisSameIndustry(Resource):
         @ns.doc('core_diagnosis_same_industry')
         def get(self, market_code):
             """동일업종 수 분석"""
-            try:
-                # 실제 동일업종 분석 로직 구현
-                # TODO: 데이터베이스에서 동일업종 데이터 조회 및 분석
-                
-                return {
-                    'market_code': market_code,
-                    'same_industry_count': 45,
-                    'density': 0.8,
-                    'competition_level': 'high',
-                    'data': {
-                        'total_businesses': 120,
-                        'same_industry': 45,
-                        'density_score': 0.8
-                    }
-                }, 200
-                
-            except Exception as e:
-                return {'message': str(e)}, 500
+            with app.test_client() as client:
+                response = client.get(f'/api/v1/core-diagnosis/same-industry/{market_code}')
+                return response.get_json(), response.status_code
     
     @ns.route('/core-diagnosis/business-rates/<string:market_code>')
     class CoreDiagnosisBusinessRates(Resource):
         @ns.doc('core_diagnosis_business_rates')
         def get(self, market_code):
             """창업·폐업 비율 분석"""
-            try:
-                # 실제 창업·폐업 비율 분석 로직 구현
-                # TODO: 데이터베이스에서 창업·폐업 데이터 조회 및 분석
-                
-                return {
-                    'market_code': market_code,
-                    'startup_rate': 12.5,
-                    'closure_rate': 8.3,
-                    'net_growth': 4.2,
-                    'data': {
-                        'new_businesses': 15,
-                        'closed_businesses': 10,
-                        'net_growth': 5
-                    }
-                }, 200
-                
-            except Exception as e:
-                return {'message': str(e)}, 500
+            with app.test_client() as client:
+                response = client.get(f'/api/v1/core-diagnosis/business-rates/{market_code}')
+                return response.get_json(), response.status_code
     
     @ns.route('/core-diagnosis/dwell-time/<string:market_code>')
     class CoreDiagnosisDwellTime(Resource):
         @ns.doc('core_diagnosis_dwell_time')
         def get(self, market_code):
             """체류시간 분석"""
-            try:
-                # 실제 체류시간 분석 로직 구현
-                # TODO: 데이터베이스에서 체류시간 데이터 조회 및 분석
-                
-                return {
-                    'market_code': market_code,
-                    'average_dwell_time': 45.5,
-                    'trend': 'stable',
-                    'period': '2024-09',
-                    'data': {
-                        'current': 45.5,
-                        'previous': 43.2,
-                        'change_rate': 5.3
-                    }
-                }, 200
-                
-            except Exception as e:
-                return {'message': str(e)}, 500
+            with app.test_client() as client:
+                response = client.get(f'/api/v1/core-diagnosis/dwell-time/{market_code}')
+                return response.get_json(), response.status_code
     
     @ns.route('/core-diagnosis/health-score/<string:market_code>')
     class CoreDiagnosisHealthScore(Resource):
         @ns.doc('core_diagnosis_health_score')
-        def get(self, market_code):
-            """상권 건강 점수 종합 산정 (GET)"""
-            try:
-                # 쿼리 파라미터에서 정보 가져오기
-                industry = request.args.get('industry')
-                category = request.args.get('category')
-                sub_category = request.args.get('sub_category')
-                
-                # 실제 CoreDiagnosisService 사용
-                from services.core_diagnosis_service import CoreDiagnosisService
-                service = CoreDiagnosisService()
-                result = service.calculate_health_score(market_code, industry, category, sub_category)
-                
-                if "error" in result:
-                    return {'message': result['error']}, 400
-                
-                return {
-                    'market_code': result['market_code'],
-                    'health_score': result['total_score'],
-                    'factors': {
-                        'foot_traffic': result['score_breakdown']['foot_traffic']['score'],
-                        'card_sales': result['score_breakdown']['card_sales']['score'],
-                        'competition': result['score_breakdown'].get('competition', {}).get('score', 0),
-                        'business_rates': result['score_breakdown']['business_rates']['score'],
-                        'dwell_time': result['score_breakdown']['dwell_time']['score']
-                    },
-                    'recommendation': result['health_status']
-                }, 200
-                
-            except Exception as e:
-                return {'message': str(e)}, 500
-        
         def post(self, market_code):
             """상권 건강 점수 종합 산정"""
-            try:
-                data = request.get_json() or {}
-                industry = data.get('industry')
-                category = data.get('category')
-                sub_category = data.get('sub_category')
-                
-                # 실제 CoreDiagnosisService 사용
-                from services.core_diagnosis_service import CoreDiagnosisService
-                service = CoreDiagnosisService()
-                result = service.calculate_health_score(market_code, industry, category, sub_category)
-                
-                if "error" in result:
-                    return {'message': result['error']}, 400
-                
-                return {
-                    'market_code': result['market_code'],
-                    'health_score': result['total_score'],
-                    'factors': {
-                        'foot_traffic': result['score_breakdown']['foot_traffic']['score'],
-                        'card_sales': result['score_breakdown']['card_sales']['score'],
-                        'competition': result['score_breakdown'].get('competition', {}).get('score', 0),
-                        'business_rates': result['score_breakdown']['business_rates']['score'],
-                        'dwell_time': result['score_breakdown']['dwell_time']['score']
-                    },
-                    'recommendation': result['health_status']
-                }, 200
-                
-            except Exception as e:
-                return {'message': str(e)}, 500
+            with app.test_client() as client:
+                response = client.post(f'/api/v1/core-diagnosis/health-score/{market_code}',
+                                     json=request.get_json() or {},
+                                     headers=request.headers)
+                return response.get_json(), response.status_code
     
     @ns.route('/core-diagnosis/comprehensive/<string:market_code>')
     class CoreDiagnosisComprehensive(Resource):
         @ns.doc('core_diagnosis_comprehensive')
         def post(self, market_code):
             """종합 상권 진단"""
-            try:
-                data = request.get_json() or {}
-                
-                # 프론트엔드에서 보내는 category, sub_category를 industry로 변환
-                category = data.get('category', '')
-                sub_category = data.get('sub_category', '')
-                
-                # 업종 정보 결정 (sub_category가 있으면 우선, 없으면 category 사용)
-                industry = sub_category if sub_category else category
-                
-                # 실제 CoreDiagnosisService 사용
-                from services.core_diagnosis_service import CoreDiagnosisService
-                service = CoreDiagnosisService()
-                result = service.calculate_health_score(market_code, industry, category, sub_category)
-                
-                if "error" in result:
-                    return {'message': result['error']}, 400
-                
-                # 상세 분석 데이터도 가져오기
-                foot_traffic = service.get_foot_traffic_analysis(market_code)
-                card_sales = service.get_card_sales_analysis(market_code)
-                business_rates = service.get_business_rates_analysis(market_code)
-                dwell_time = service.get_dwell_time_analysis(market_code)
-                
-                # 강점과 약점 분석
-                strengths = []
-                weaknesses = []
-                
-                if result['score_breakdown']['foot_traffic']['score'] >= 80:
-                    strengths.append('유동인구 증가')
-                elif result['score_breakdown']['foot_traffic']['score'] < 60:
-                    weaknesses.append('유동인구 감소')
-                
-                if result['score_breakdown']['card_sales']['score'] >= 80:
-                    strengths.append('카드매출 증가')
-                elif result['score_breakdown']['card_sales']['score'] < 60:
-                    weaknesses.append('카드매출 감소')
-                
-                if result['score_breakdown']['business_rates']['score'] >= 80:
-                    strengths.append('창업 활성화')
-                elif result['score_breakdown']['business_rates']['score'] < 60:
-                    weaknesses.append('창업 부진')
-                
-                if result['score_breakdown']['dwell_time']['score'] >= 80:
-                    strengths.append('체류시간 양호')
-                elif result['score_breakdown']['dwell_time']['score'] < 60:
-                    weaknesses.append('체류시간 부족')
-                
-                return {
-                    'market_code': market_code,
-                    'overall_score': result['total_score'],
-                    'indicators': {
-                        'foot_traffic': result['score_breakdown']['foot_traffic']['score'],
-                        'card_sales': result['score_breakdown']['card_sales']['score'],
-                        'competition': result['score_breakdown'].get('competition', {}).get('score', 0),
-                        'business_rates': result['score_breakdown']['business_rates']['score'],
-                        'dwell_time': result['score_breakdown']['dwell_time']['score']
-                    },
-                    'strengths': strengths,
-                    'weaknesses': weaknesses,
-                    'recommendations': result.get('recommendations', [])
-                }, 200
-                
-            except Exception as e:
-                return {'message': str(e)}, 500
+            with app.test_client() as client:
+                response = client.post(f'/api/v1/core-diagnosis/comprehensive/{market_code}',
+                                     json=request.get_json() or {},
+                                     headers=request.headers)
+                return response.get_json(), response.status_code
+
+    # JWT 오류 핸들러 추가
+    from flask_jwt_extended.exceptions import JWTExtendedException
+    from jwt import InvalidTokenError
+    
+    @app.errorhandler(422)
+    def handle_422_error(error):
+        """422 오류 처리 - 주로 JWT 토큰 관련 오류"""
+        print(f"[ERROR] 422 오류 발생: {error}")
+        print(f"[ERROR] 오류 설명: {error.description}")
+        
+        # JWT 관련 오류인지 확인
+        if hasattr(error, 'description') and error.description:
+            if 'jwt' in error.description.lower() or 'token' in error.description.lower():
+                return jsonify({
+                    "success": False,
+                    "message": "인증 토큰이 유효하지 않습니다. 다시 로그인해주세요.",
+                    "error_code": "INVALID_TOKEN",
+                    "timestamp": datetime.now().isoformat()
+                }), 401
+        
+        return jsonify({
+            "success": False,
+            "message": "요청 데이터가 올바르지 않습니다.",
+            "error_code": "VALIDATION_ERROR",
+            "timestamp": datetime.now().isoformat()
+        }), 422
+    
+    @app.errorhandler(401)
+    def handle_401_error(error):
+        """401 오류 처리 - 인증 실패"""
+        print(f"[ERROR] 401 오류 발생: {error}")
+        return jsonify({
+            "success": False,
+            "message": "인증이 필요합니다. 로그인해주세요.",
+            "error_code": "UNAUTHORIZED",
+            "timestamp": datetime.now().isoformat()
+        }), 401
 
     # Blueprints 등록
     api.add_namespace(auth_ns, path="/sodam/auth")
+    api.add_namespace(profile_ns, path="/sodam/profile")
     app.register_blueprint(market_diagnosis_bp, url_prefix="/api/v1/market-diagnosis")
     app.register_blueprint(industry_analysis_bp, url_prefix="/api/v1/industry-analysis")
     app.register_blueprint(regional_analysis_bp, url_prefix="/api/v1/regional-analysis")
@@ -852,5 +636,8 @@ def create_app(config_object: type = Config) -> Flask:
     app.register_blueprint(strategy_cards_bp, url_prefix="/api/v1/strategy-cards")
     app.register_blueprint(support_tools_bp, url_prefix="/api/v1/support-tools")
     app.register_blueprint(map_visualization_bp, url_prefix="/api/v1/map-visualization")
+    app.register_blueprint(business_info_bp, url_prefix="/api/v1/businesses")
+    app.register_blueprint(profile_bp)
+    app.register_blueprint(community_bp)
     
     return app

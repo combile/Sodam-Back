@@ -412,3 +412,5 @@ def get_expertise_areas():
                 "message": str(e)
             }
         }), 500
+
+

@@ -328,3 +328,5 @@ curl -X GET "http://localhost:5000/api/v1/core-diagnosis/foot-traffic/10000"
 **🎉 완전한 Swagger API 문서가 준비되었습니다!**
 
 브라우저에서 `http://localhost:5003/docs/`에 접속하여 모든 API를 테스트해보세요!
+
+

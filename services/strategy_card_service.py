@@ -417,3 +417,5 @@ class StrategyCardService:
         """전략 우선순위 정렬"""
         sorted_cards = sorted(strategy_cards, key=lambda x: x["priority"], reverse=True)
         return [card["strategy_id"] for card in sorted_cards]
+
+

@@ -29,3 +29,5 @@ ENV DATABASE_URL=sqlite:///instance/app.db
 
 # 데이터베이스 초기화 및 서버 실행
 CMD ["sh", "-c", "flask db upgrade && python run_server.py"]
+
+

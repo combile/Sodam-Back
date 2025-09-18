@@ -520,3 +520,5 @@ class RecommendationService:
                 "4. 사업 다각화 방안 모색",
                 "5. 장기 전략 수립"
             ]
+
+

@@ -15,6 +15,12 @@ class User(db.Model):
     preferred_areas = db.Column(db.JSON, nullable=True)  # 선호 지역들
     profile_image = db.Column(db.String(500), nullable=True)  # 프로필 이미지 URL
     is_active = db.Column(db.Boolean, default=True)
+    # 레벨 시스템 관련 필드
+    level = db.Column(db.Integer, default=1)  # 현재 레벨
+    experience = db.Column(db.Integer, default=0)  # 현재 경험치
+    total_posts = db.Column(db.Integer, default=0)  # 총 게시글 수
+    total_comments = db.Column(db.Integer, default=0)  # 총 댓글 수
+    total_likes_received = db.Column(db.Integer, default=0)  # 받은 좋아요 수
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
@@ -34,8 +40,67 @@ class User(db.Model):
             },
             "profileImage": self.profile_image,
             "isActive": self.is_active,
+            # 레벨 시스템 정보
+            "level": self.level,
+            "experience": self.experience,
+            "totalPosts": self.total_posts,
+            "totalComments": self.total_comments,
+            "totalLikesReceived": self.total_likes_received,
+            "levelInfo": self.get_level_info(),
             "createdAt": self.created_at.isoformat(),
             "updatedAt": self.updated_at.isoformat()
+        }
+
+    def get_level_info(self):
+        """레벨 정보 계산"""
+        current_level_exp = self.get_experience_for_level(self.level)
+        next_level_exp = self.get_experience_for_level(self.level + 1)
+        progress = (self.experience - current_level_exp) / (next_level_exp - current_level_exp) * 100
+        
+        return {
+            "currentLevel": self.level,
+            "currentExperience": self.experience,
+            "currentLevelExp": current_level_exp,
+            "nextLevelExp": next_level_exp,
+            "progress": min(100, max(0, progress)),  # 0-100% 범위로 제한
+            "expToNextLevel": next_level_exp - self.experience
+        }
+
+    @staticmethod
+    def get_experience_for_level(level):
+        """특정 레벨에 도달하기 위한 총 경험치 계산"""
+        if level <= 1:
+            return 0
+        # 레벨별 필요 경험치: 100 * (level - 1) * 1.2^(level - 2)
+        # 1레벨: 0 exp, 2레벨: 100 exp, 3레벨: 240 exp, 4레벨: 432 exp, ...
+        total_exp = 0
+        for i in range(2, level + 1):
+            level_exp = int(100 * (i - 1) * (1.2 ** (i - 2)))
+            total_exp += level_exp
+        return total_exp
+
+    def add_experience(self, amount, activity_type="other"):
+        """경험치 추가 및 레벨 업 체크"""
+        old_level = self.level
+        self.experience += amount
+        
+        # 레벨 업 체크
+        while self.experience >= self.get_experience_for_level(self.level + 1):
+            self.level += 1
+        
+        # 활동별 카운트 업데이트
+        if activity_type == "post":
+            self.total_posts += 1
+        elif activity_type == "comment":
+            self.total_comments += 1
+        elif activity_type == "like_received":
+            self.total_likes_received += 1
+        
+        return {
+            "leveled_up": self.level > old_level,
+            "old_level": old_level,
+            "new_level": self.level,
+            "experience_gained": amount
         }
 
 # 상권 진단 관련 모델들
@@ -286,5 +351,113 @@ class ExpertConsultation(db.Model):
             "contact_phone": self.contact_phone,
             "message": self.message,
             "status": self.status,
+            "created_at": self.created_at.isoformat()
+        }
+
+# Q&A 커뮤니티 관련 모델들
+class Post(db.Model):
+    """Q&A 게시글"""
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    category = db.Column(db.String(20), nullable=False)  # '내일 사장', '오늘 사장'
+    title = db.Column(db.String(200), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    views = db.Column(db.Integer, default=0)
+    likes_count = db.Column(db.Integer, default=0)
+    comments_count = db.Column(db.Integer, default=0)
+    is_solved = db.Column(db.Boolean, default=False)  # 해결됨 여부
+    business_type = db.Column(db.String(50), nullable=True)  # 관련 업종
+    location = db.Column(db.String(100), nullable=True)  # 관련 지역
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # 관계
+    author = db.relationship('User', backref='posts', lazy=True)
+    comments = db.relationship('Comment', backref='post', lazy=True, cascade='all, delete-orphan')
+    likes = db.relationship('PostLike', backref='post', lazy=True, cascade='all, delete-orphan')
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "author": self.author.to_dict() if self.author else None,
+            "category": self.category,
+            "title": self.title,
+            "content": self.content,
+            "views": self.views,
+            "likes_count": self.likes_count,
+            "comments_count": self.comments_count,
+            "is_solved": self.is_solved,
+            "business_type": self.business_type,
+            "location": self.location,
+            "created_at": self.created_at.isoformat(),
+            "updated_at": self.updated_at.isoformat()
+        }
+
+class Comment(db.Model):
+    """댓글 (답변)"""
+    id = db.Column(db.Integer, primary_key=True)
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    is_accepted = db.Column(db.Boolean, default=False)  # 채택된 답변인지
+    likes_count = db.Column(db.Integer, default=0)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # 관계
+    author = db.relationship('User', backref='comments', lazy=True)
+    likes = db.relationship('CommentLike', backref='comment', lazy=True, cascade='all, delete-orphan')
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "post_id": self.post_id,
+            "author": self.author.to_dict() if self.author else None,
+            "content": self.content,
+            "is_accepted": self.is_accepted,
+            "likes_count": self.likes_count,
+            "created_at": self.created_at.isoformat(),
+            "updated_at": self.updated_at.isoformat()
+        }
+
+class PostLike(db.Model):
+    """게시글 좋아요"""
+    id = db.Column(db.Integer, primary_key=True)
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    # 관계
+    user = db.relationship('User', backref='post_likes', lazy=True)
+
+    # 복합 유니크 제약조건
+    __table_args__ = (db.UniqueConstraint('post_id', 'user_id', name='unique_post_like'),)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "post_id": self.post_id,
+            "user_id": self.user_id,
+            "created_at": self.created_at.isoformat()
+        }
+
+class CommentLike(db.Model):
+    """댓글 좋아요"""
+    id = db.Column(db.Integer, primary_key=True)
+    comment_id = db.Column(db.Integer, db.ForeignKey('comment.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    # 관계
+    user = db.relationship('User', backref='comment_likes', lazy=True)
+
+    # 복합 유니크 제약조건
+    __table_args__ = (db.UniqueConstraint('comment_id', 'user_id', name='unique_comment_like'),)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "comment_id": self.comment_id,
+            "user_id": self.user_id,
             "created_at": self.created_at.isoformat()
         }

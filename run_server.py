@@ -12,7 +12,7 @@ if __name__ == "__main__":
     app = create_app()
     
     # 환경 변수에서 포트 설정 (기본값: 5000)
-    port = int(os.environ.get("PORT", 5000))
+    port = int(os.environ.get("PORT", 5001))
     debug = os.environ.get("FLASK_DEBUG", "True").lower() == "true"
     
     print(f"서버 시작: http://localhost:{port}")

@@ -307,3 +307,5 @@ class ComprehensiveAnalysis(Resource):
                     "message": str(e)
                 }
             }), 500
+
+

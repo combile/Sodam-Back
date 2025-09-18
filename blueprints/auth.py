@@ -83,6 +83,10 @@ register_model = auth_ns.model('RegisterRequest', {
         description='선호 지역 목록 (다중 선택 가능)', 
         example=['중구', '서구'],
         enum=['동구', '중구', '서구', '유성구', '대덕구']
+    ),
+    'profileImage': fields.String(
+        description='프로필 이미지 (Base64 인코딩된 이미지 데이터 또는 URL)', 
+        example='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...'
     )
 })
 
@@ -145,6 +149,8 @@ class Register(Resource):
         ''')
     def post(self):
         data = request.get_json() or {}
+        print(f"받은 회원가입 데이터: {data}")
+        
         username = (data.get("username") or "").strip()
         email = (data.get("email") or "").strip().lower()
         password = (data.get("password") or "").strip()
@@ -156,6 +162,8 @@ class Register(Resource):
         interested_business_types = data.get("interestedBusinessTypes", [])
         preferred_areas = data.get("preferredAreas", [])
         profile_image = data.get("profileImage")
+        
+        print(f"처리된 닉네임: '{nickname}'")
 
         # 필수 필드 검증
         if not username or not email or not password or not name:
@@ -201,7 +209,11 @@ class Register(Resource):
                 }
             }), 400
 
-        pw_hash = bcrypt.generate_password_hash(password).decode()
+        pw_hash = bcrypt.generate_password_hash(password)
+        # bcrypt 해시를 문자열로 변환
+        if isinstance(pw_hash, bytes):
+            pw_hash = pw_hash.decode('utf-8')
+        pw_hash = str(pw_hash)
         user = User(
             username=username,
             email=email,
@@ -219,14 +231,169 @@ class Register(Resource):
         db.session.add(user)
         db.session.commit()
 
-        return jsonify({
+        # 사용자 데이터를 JSON 직렬화 가능한 형태로 변환
+        user_data = {
+            "id": int(user.id),
+            "username": str(user.username),
+            "email": str(user.email),
+            "name": str(user.name),
+            "nickname": str(user.nickname) if user.nickname else None,
+            "userType": str(user.user_type),
+            "businessStage": str(user.business_stage) if user.business_stage else None,
+            "phone": str(user.phone) if user.phone else None,
+            "preferences": {
+                "interestedBusinessTypes": user.interested_business_types or [],
+                "preferredAreas": user.preferred_areas or []
+            },
+            "profileImage": str(user.profile_image) if user.profile_image else None,
+            "isActive": bool(user.is_active),
+            "createdAt": user.created_at.isoformat() if user.created_at else None,
+            "updatedAt": user.updated_at.isoformat() if user.updated_at else None
+        }
+        
+        return {
             "success": True,
             "data": {
-                "user": user.to_dict()
+                "user": user_data
             },
             "message": "회원가입이 완료되었습니다.",
-            "timestamp": datetime.utcnow().isoformat()
-        }), 201
+            "timestamp": datetime.utcnow().isoformat() + "Z"
+        }, 201
+
+@auth_ns.route('/check-username')
+class CheckUsername(Resource):
+    @auth_ns.doc('check_username', 
+        description='''
+        ## 아이디 중복 검사
+        
+        회원가입 전 아이디 중복 여부를 확인합니다.
+        
+        ### 요청 파라미터
+        - **username**: 확인할 아이디 (필수, 3-20자)
+        
+        ### 응답 예시
+        ```json
+        {
+            "success": true,
+            "data": {
+                "available": true,
+                "message": "사용 가능한 아이디입니다."
+            }
+        }
+        ```
+        ''')
+    def post(self):
+        data = request.get_json() or {}
+        username = (data.get("username") or "").strip()
+        
+        if not username:
+            return jsonify({
+                "success": False,
+                "error": {
+                    "code": "VALIDATION_ERROR",
+                    "message": "아이디를 입력해주세요.",
+                    "details": {}
+                }
+            }), 400
+        
+        if len(username) < 3 or len(username) > 20:
+            return jsonify({
+                "success": False,
+                "error": {
+                    "code": "VALIDATION_ERROR",
+                    "message": "아이디는 3-20자 사이여야 합니다.",
+                    "details": {}
+                }
+            }), 400
+        
+        # 아이디 중복 검사
+        existing_user = User.query.filter_by(username=username).first()
+        
+        if existing_user:
+            return {
+                "success": True,
+                "data": {
+                    "available": False,
+                    "message": "이미 사용 중인 아이디입니다."
+                }
+            }, 200
+        else:
+            return {
+                "success": True,
+                "data": {
+                    "available": True,
+                    "message": "사용 가능한 아이디입니다."
+                }
+            }, 200
+
+@auth_ns.route('/check-email')
+class CheckEmail(Resource):
+    @auth_ns.doc('check_email', 
+        description='''
+        ## 이메일 중복 검사
+        
+        회원가입 전 이메일 중복 여부를 확인합니다.
+        
+        ### 요청 파라미터
+        - **email**: 확인할 이메일 (필수, 유효한 이메일 형식)
+        
+        ### 응답 예시
+        ```json
+        {
+            "success": true,
+            "data": {
+                "available": true,
+                "message": "사용 가능한 이메일입니다."
+            }
+        }
+        ```
+        ''')
+    def post(self):
+        data = request.get_json() or {}
+        email = (data.get("email") or "").strip().lower()
+        
+        if not email:
+            return jsonify({
+                "success": False,
+                "error": {
+                    "code": "VALIDATION_ERROR",
+                    "message": "이메일을 입력해주세요.",
+                    "details": {}
+                }
+            }), 400
+        
+        # 이메일 형식 검증
+        import re
+        email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        if not re.match(email_pattern, email):
+            return jsonify({
+                "success": False,
+                "error": {
+                    "code": "VALIDATION_ERROR",
+                    "message": "올바른 이메일 형식이 아닙니다.",
+                    "details": {}
+                }
+            }), 400
+        
+        # 이메일 중복 검사
+        existing_user = User.query.filter_by(email=email).first()
+        
+        if existing_user:
+            return {
+                "success": True,
+                "data": {
+                    "available": False,
+                    "message": "이미 사용 중인 이메일입니다."
+                }
+            }, 200
+        else:
+            return {
+                "success": True,
+                "data": {
+                    "available": True,
+                    "message": "사용 가능한 이메일입니다."
+                }
+            }, 200
 
 @auth_ns.route('/login')
 class Login(Resource):
@@ -312,15 +479,40 @@ class Login(Resource):
                 }
             }), 403
 
-        # JWT 토큰 생성
-        token = create_access_token(identity=user.id)
+        # JWT 토큰 생성 (identity는 문자열이어야 함)
+        token = create_access_token(identity=str(user.id))
+        # bytes 객체인 경우 문자열로 변환
+        if isinstance(token, bytes):
+            token_str = token.decode('utf-8')
+        else:
+            token_str = str(token)
         
-        return jsonify({
+        # 사용자 데이터를 JSON 직렬화 가능한 형태로 변환
+        user_data = {
+            "id": int(user.id),
+            "username": str(user.username) if user.username else "",
+            "email": str(user.email) if user.email else "",
+            "name": str(user.name) if user.name else "",
+            "nickname": str(user.nickname) if user.nickname else "",
+            "userType": str(user.user_type) if user.user_type else "",
+            "businessStage": str(user.business_stage) if user.business_stage else None,
+            "phone": str(user.phone) if user.phone else None,
+            "preferences": {
+                "interestedBusinessTypes": user.interested_business_types or [],
+                "preferredAreas": user.preferred_areas or []
+            },
+            "profileImage": str(user.profile_image) if user.profile_image else None,
+            "isActive": bool(user.is_active),
+            "createdAt": user.created_at.isoformat() if user.created_at else None,
+            "updatedAt": user.updated_at.isoformat() if user.updated_at else None
+        }
+        
+        return {
             "success": True,
             "data": {
-                "accessToken": token,
-                "user": user.to_dict()
+                "accessToken": token_str,
+                "user": user_data
             },
             "message": "로그인에 성공했습니다.",
-            "timestamp": datetime.utcnow().isoformat()
-        }), 200
+            "timestamp": datetime.utcnow().isoformat() + "Z"
+        }, 200

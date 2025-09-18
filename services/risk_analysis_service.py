@@ -411,3 +411,5 @@ class RiskAnalysisService:
                 "4단계: 장기적 투자 계획 수립 및 실행 (6개월 후)"
             ]
         }
+
+

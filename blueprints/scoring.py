@@ -281,3 +281,5 @@ def _generate_detailed_recommendations(score_result: dict, industry: str, region
         ])
     
     return recommendations
+
+

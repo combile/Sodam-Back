@@ -425,3 +425,5 @@ class SupportToolsService:
             {"category": "전략별", "count": 4, "description": "전략별 성공 사례"},
             {"category": "투자규모별", "count": 3, "description": "투자 규모별 성공 사례"}
         ]
+
+
