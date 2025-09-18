@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from datetime import datetime
 from flask_restx import Api, Resource, fields
 import json
@@ -133,7 +133,8 @@ def create_app(config_object: type = Config) -> Flask:
                 "http://localhost:3000", 
                 "http://127.0.0.1:3000",
                 "http://localhost:5001",
-                "http://127.0.0.1:5001"
+                "http://127.0.0.1:5001",
+                "https://combile.github.io"
             ],
             "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
             "allow_headers": [
