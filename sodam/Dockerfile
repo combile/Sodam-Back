@@ -10,15 +10,8 @@ COPY package*.json ./
 # 의존성 설치
 RUN npm ci
 
-# public 폴더 먼저 복사
-COPY public/ ./public/
-
-# src 폴더 복사
-COPY src/ ./src/
-
-# 기타 필요한 파일들 복사
-COPY tsconfig.json ./
-COPY nginx.conf ./
+# 모든 파일 복사
+COPY . .
 
 # 환경 변수 설정
 ARG REACT_APP_KAKAO_MAP_API_KEY
