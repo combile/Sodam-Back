@@ -410,7 +410,7 @@ const MarketAnalysisPage: React.FC = () => {
     } else {
       // 스크립트가 없으면 새로 로드
       const script = document.createElement("script");
-      script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=f4cc7a593ecade740db60c38c67ff038&autoload=false&libraries=services`;
+      script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.REACT_APP_KAKAO_MAP_API_KEY}&autoload=false&libraries=services`;
       script.async = true;
 
       script.onload = () => {
